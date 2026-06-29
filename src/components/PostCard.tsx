@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Avatar } from './Avatar'
 import { TimeAgo } from './TimeAgo'
+import { PostMedia, type PostMediaView } from './PostMedia'
 import { editPostAction, deletePostAction } from '@/app/(app)/feed/post-actions'
 import { POST_MAX, type PostState } from '@/lib/post-constants'
 
@@ -21,6 +22,7 @@ export type PostCardData = {
     avatarPath: string | null
     role: 'admin' | 'creator' | 'supporter'
   }
+  media: PostMediaView[]
 }
 
 function SaveBtn() {
@@ -101,9 +103,14 @@ export function PostCard({
               </div>
             </form>
           ) : (
-            <p className="mt-1 text-base whitespace-pre-wrap break-words text-[#333]">
-              {post.body}
-            </p>
+            <>
+              {post.body && (
+                <p className="mt-1 text-base whitespace-pre-wrap break-words text-[#333]">
+                  {post.body}
+                </p>
+              )}
+              {post.media.length > 0 && <PostMedia media={post.media} />}
+            </>
           )}
 
           {(isOwner || canDelete) && !editing && (

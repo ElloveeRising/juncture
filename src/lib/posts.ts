@@ -1,7 +1,7 @@
 import 'server-only'
-import { and, desc, eq, isNull, notInArray } from 'drizzle-orm'
+import { and, desc, eq, isNull, notInArray, inArray, asc } from 'drizzle-orm'
 import { getDb } from '@/db'
-import { posts, users, blocks, mutes } from '@/db/schema'
+import { posts, users, blocks, mutes, postMedia } from '@/db/schema'
 
 export type FeedAuthor = {
   id: number
@@ -12,12 +12,23 @@ export type FeedAuthor = {
   isAnonymous: boolean
 }
 
+export type PostMediaItem = {
+  id: number
+  kind: 'image' | 'audio'
+  path: string
+  thumbPath: string | null
+  mime: string
+  width: number | null
+  height: number | null
+}
+
 export type FeedPost = {
   id: number
   body: string | null
   createdAt: Date
   editedAt: Date | null
   author: FeedAuthor
+  media: PostMediaItem[]
 }
 
 const FEED_LIMIT = 50
@@ -75,6 +86,31 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
     .limit(FEED_LIMIT)
     .all()
 
+  // Fetch all media for the visible posts in one query, then group by post.
+  const postIds = rows.map((r) => r.id)
+  const mediaByPost = new Map<number, PostMediaItem[]>()
+  if (postIds.length) {
+    const mediaRows = db
+      .select()
+      .from(postMedia)
+      .where(inArray(postMedia.postId, postIds))
+      .orderBy(asc(postMedia.position))
+      .all()
+    for (const m of mediaRows) {
+      const list = mediaByPost.get(m.postId) ?? []
+      list.push({
+        id: m.id,
+        kind: m.kind,
+        path: m.path,
+        thumbPath: m.thumbPath,
+        mime: m.mime,
+        width: m.width,
+        height: m.height,
+      })
+      mediaByPost.set(m.postId, list)
+    }
+  }
+
   return rows.map((r) => ({
     id: r.id,
     body: r.body,
@@ -88,6 +124,7 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
       role: r.role,
       isAnonymous: r.isAnonymous,
     },
+    media: mediaByPost.get(r.id) ?? [],
   }))
 }
 

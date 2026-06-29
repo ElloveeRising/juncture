@@ -66,6 +66,7 @@ export const postMedia = sqliteTable('post_media', {
     .references(() => posts.id, { onDelete: 'cascade' }),
   kind: text('kind', { enum: ['image', 'audio'] }).notNull(),
   path: text('path').notNull(),
+  thumbPath: text('thumb_path'), // images only; feed shows this, links to full
   mime: text('mime').notNull(),
   width: integer('width'),
   height: integer('height'),

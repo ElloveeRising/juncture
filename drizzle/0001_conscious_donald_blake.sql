@@ -1,0 +1,1 @@
+ALTER TABLE `post_media` ADD `thumb_path` text;

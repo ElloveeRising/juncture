@@ -23,6 +23,14 @@ export default async function FeedPage() {
       avatarPath: p.author.avatarPath,
       role: p.author.role,
     },
+    media: p.media.map((m) => ({
+      id: m.id,
+      kind: m.kind,
+      path: m.path,
+      thumbPath: m.thumbPath,
+      width: m.width,
+      height: m.height,
+    })),
   }))
 
   return (
