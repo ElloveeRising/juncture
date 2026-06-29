@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Root design tokens ─────────────────────────────────────────────────── */
+:root {
+  --chrome:       #3b5998;
+  --chrome-sec:   #6d84b4;
+  --chrome-light: #dce3ef;
+  --page-bg:      #e9ebee;
+  --card-bg:      #ffffff;
+  --border:       #d8dfea;
+  --link:         #3b5998;
+  --link-hover:   #2d4373;
+  --text:         #333333;
+  --text-muted:   #666666;
+  --text-light:   #999999;
+}
+
+/* ── Base reset to early-2000s feel ────────────────────────────────────── */
+@layer base {
+  body {
+    @apply bg-page text-[#333] font-sans;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    color: var(--link-hover);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    color: #333;
+  }
+}
+
+/* ── Reusable component styles ──────────────────────────────────────────── */
+@layer components {
+  /* The boxy bordered card — the atomic unit of the UI */
+  .vt-card {
+    @apply bg-card border border-[#d8dfea] rounded;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* Buttons styled like old web — subtle gradient, bordered */
+  .vt-btn {
+    @apply inline-flex items-center gap-1 px-3 py-1 text-sm font-semibold rounded border cursor-pointer;
+    border-color: #9fb2d1;
+    background: linear-gradient(to bottom, #6d84b4 0%, #4a69a0 100%);
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.25);
+    transition: filter 80ms;
+  }
+  .vt-btn:hover {
+    filter: brightness(1.08);
+    text-decoration: none;
+  }
+  .vt-btn:active {
+    filter: brightness(0.93);
+  }
+
+  /* Ghost / secondary button */
+  .vt-btn-ghost {
+    @apply inline-flex items-center gap-1 px-3 py-1 text-sm font-semibold rounded border cursor-pointer;
+    border-color: #d8dfea;
+    background: linear-gradient(to bottom, #fff 0%, #f0f0f0 100%);
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+    transition: filter 80ms;
+  }
+  .vt-btn-ghost:hover {
+    filter: brightness(0.97);
+    text-decoration: none;
+  }
+
+  /* Text inputs */
+  .vt-input {
+    @apply block w-full px-2 py-1 text-sm border rounded;
+    border-color: #bcc7d8;
+    background: #fff;
+    color: #333;
+    outline: none;
+  }
+  .vt-input:focus {
+    border-color: #6d84b4;
+    box-shadow: 0 0 0 2px rgba(59,89,152,0.15);
+  }
+
+  /* Textarea */
+  .vt-textarea {
+    @apply vt-input resize-y min-h-[80px];
+  }
+}
