@@ -8,6 +8,8 @@ import { Avatar } from './Avatar'
 import { TimeAgo } from './TimeAgo'
 import { PostMedia, type PostMediaView } from './PostMedia'
 import { LinkPreviewCard, type LinkPreviewView } from './LinkPreviewCard'
+import { LikeButton } from './LikeButton'
+import { CommentThread, type CommentNode } from './CommentThread'
 import { editPostAction, deletePostAction } from '@/app/(app)/feed/post-actions'
 import { POST_MAX, type PostState } from '@/lib/post-constants'
 
@@ -25,6 +27,17 @@ export type PostCardData = {
   }
   media: PostMediaView[]
   linkPreview: LinkPreviewView | null
+  reactions: { likeCount: number; likedByMe: boolean }
+  comments: CommentNode[]
+}
+
+function countComments(nodes: CommentNode[]): number {
+  let n = 0
+  for (const c of nodes) {
+    if (!c.deleted) n++
+    n += countComments(c.replies)
+  }
+  return n
 }
 
 function SaveBtn() {
@@ -51,6 +64,7 @@ export function PostCard({
 
   const isOwner = post.author.id === viewerId
   const canDelete = isOwner || viewerRole === 'admin'
+  const commentCount = countComments(post.comments)
 
   useEffect(() => {
     if (editState.ok) {
@@ -137,6 +151,28 @@ export function PostCard({
                 </form>
               )}
             </div>
+          )}
+
+          {!editing && (
+            <>
+              <div className="flex items-center gap-4 mt-2 pt-2 border-t border-[#f0f0f0]">
+                <LikeButton
+                  targetType="post"
+                  targetId={post.id}
+                  likeCount={post.reactions.likeCount}
+                  likedByMe={post.reactions.likedByMe}
+                />
+                <span className="text-sm text-[#999]">
+                  {commentCount} comment{commentCount === 1 ? '' : 's'}
+                </span>
+              </div>
+              <CommentThread
+                postId={post.id}
+                comments={post.comments}
+                viewerId={viewerId}
+                viewerRole={viewerRole}
+              />
+            </>
           )}
         </div>
       </div>

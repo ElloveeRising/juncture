@@ -2,6 +2,8 @@ import 'server-only'
 import { and, desc, eq, isNull, notInArray, inArray, asc } from 'drizzle-orm'
 import { getDb } from '@/db'
 import { posts, users, blocks, mutes, postMedia, linkPreviews } from '@/db/schema'
+import { getReactionSummaries, type ReactionSummary } from '@/lib/reactions'
+import { getCommentsForPosts, type CommentView } from '@/lib/comments'
 
 export type FeedAuthor = {
   id: number
@@ -37,6 +39,8 @@ export type FeedPost = {
   author: FeedAuthor
   media: PostMediaItem[]
   linkPreview: LinkPreviewItem | null
+  reactions: ReactionSummary
+  comments: CommentView[]
 }
 
 const FEED_LIMIT = 50
@@ -96,6 +100,9 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
 
   // Fetch all media for the visible posts in one query, then group by post.
   const postIds = rows.map((r) => r.id)
+  const hiddenSet = new Set(hidden)
+  const postReactions = getReactionSummaries('post', postIds, viewerId)
+  const commentsByPost = getCommentsForPosts(postIds, viewerId, hiddenSet)
   const mediaByPost = new Map<number, PostMediaItem[]>()
   if (postIds.length) {
     const mediaRows = db
@@ -154,6 +161,8 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
     },
     media: mediaByPost.get(r.id) ?? [],
     linkPreview: previewByPost.get(r.id) ?? null,
+    reactions: postReactions.get(r.id) ?? { likeCount: 0, likedByMe: false },
+    comments: commentsByPost.get(r.id) ?? [],
   }))
 }
 
