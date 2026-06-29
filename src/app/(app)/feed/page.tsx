@@ -1,62 +1,16 @@
 import { getCurrentUser, canPost } from '@/lib/auth'
 import { getFeedPosts } from '@/lib/posts'
-import type { CommentView } from '@/lib/comments'
+import { toPostCardData } from '@/lib/post-serialize'
 import { Composer } from '@/components/Composer'
-import { PostCard, type PostCardData } from '@/components/PostCard'
-import type { CommentNode } from '@/components/CommentThread'
+import { PostCard } from '@/components/PostCard'
 import { FeedAutoRefresh } from '@/components/FeedAutoRefresh'
-
-function serializeComment(c: CommentView): CommentNode {
-  return {
-    id: c.id,
-    parentId: c.parentId,
-    body: c.body,
-    deleted: c.deleted,
-    createdAtISO: c.createdAt.toISOString(),
-    editedAtISO: c.editedAt ? c.editedAt.toISOString() : null,
-    author: {
-      id: c.author.id,
-      handle: c.author.handle,
-      displayName: c.author.displayName,
-      avatarPath: c.author.avatarPath,
-      role: c.author.role,
-    },
-    reactions: c.reactions,
-    replies: c.replies.map(serializeComment),
-  }
-}
 
 // Always render fresh — this is a near-live feed.
 export const dynamic = 'force-dynamic'
 
 export default async function FeedPage() {
   const user = (await getCurrentUser())!
-  const posts = getFeedPosts(user.id)
-
-  const cards: PostCardData[] = posts.map((p) => ({
-    id: p.id,
-    body: p.body,
-    createdAtISO: p.createdAt.toISOString(),
-    editedAtISO: p.editedAt ? p.editedAt.toISOString() : null,
-    author: {
-      id: p.author.id,
-      handle: p.author.handle,
-      displayName: p.author.displayName,
-      avatarPath: p.author.avatarPath,
-      role: p.author.role,
-    },
-    media: p.media.map((m) => ({
-      id: m.id,
-      kind: m.kind,
-      path: m.path,
-      thumbPath: m.thumbPath,
-      width: m.width,
-      height: m.height,
-    })),
-    linkPreview: p.linkPreview,
-    reactions: p.reactions,
-    comments: p.comments.map(serializeComment),
-  }))
+  const cards = getFeedPosts(user.id).map(toPostCardData)
 
   return (
     <div className="space-y-4">

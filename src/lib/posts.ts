@@ -70,15 +70,21 @@ function hiddenAuthorIds(viewerId: number): number[] {
   return [...set]
 }
 
-export function getFeedPosts(viewerId: number): FeedPost[] {
-  const db = getDb()
-  const hidden = hiddenAuthorIds(viewerId)
+type PostRow = {
+  id: number
+  body: string | null
+  createdAt: Date
+  editedAt: Date | null
+  authorId: number
+  handle: string
+  displayName: string
+  avatarPath: string | null
+  role: 'admin' | 'creator' | 'supporter'
+  isAnonymous: boolean
+}
 
-  const where = hidden.length
-    ? and(isNull(posts.deletedAt), notInArray(posts.authorId, hidden))
-    : isNull(posts.deletedAt)
-
-  const rows = db
+function selectPostRows(where: ReturnType<typeof and> | ReturnType<typeof eq>): PostRow[] {
+  return getDb()
     .select({
       id: posts.id,
       body: posts.body,
@@ -97,10 +103,32 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
     .orderBy(desc(posts.createdAt))
     .limit(FEED_LIMIT)
     .all()
+}
 
+export function getFeedPosts(viewerId: number): FeedPost[] {
+  const hidden = hiddenAuthorIds(viewerId)
+  const where = hidden.length
+    ? and(isNull(posts.deletedAt), notInArray(posts.authorId, hidden))
+    : isNull(posts.deletedAt)
+  return enrichPostRows(selectPostRows(where), viewerId, new Set(hidden))
+}
+
+/** Posts by a single author, visible to the viewer (used on profile pages). */
+export function getPostsByAuthor(authorId: number, viewerId: number): FeedPost[] {
+  const hidden = hiddenAuthorIds(viewerId)
+  if (hidden.includes(authorId)) return [] // blocked/muted — show nothing
+  const where = and(isNull(posts.deletedAt), eq(posts.authorId, authorId))
+  return enrichPostRows(selectPostRows(where), viewerId, new Set(hidden))
+}
+
+function enrichPostRows(
+  rows: PostRow[],
+  viewerId: number,
+  hiddenSet: Set<number>,
+): FeedPost[] {
+  const db = getDb()
   // Fetch all media for the visible posts in one query, then group by post.
   const postIds = rows.map((r) => r.id)
-  const hiddenSet = new Set(hidden)
   const postReactions = getReactionSummaries('post', postIds, viewerId)
   const commentsByPost = getCommentsForPosts(postIds, viewerId, hiddenSet)
   const mediaByPost = new Map<number, PostMediaItem[]>()
@@ -168,4 +196,36 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
 
 export function getPostById(id: number): typeof posts.$inferSelect | undefined {
   return getDb().select().from(posts).where(eq(posts.id, id)).get()
+}
+
+export type PublicProfile = {
+  id: number
+  handle: string
+  displayName: string
+  avatarPath: string | null
+  bio: string | null
+  role: 'admin' | 'creator' | 'supporter'
+  isAnonymous: boolean
+  allowSupporterDms: boolean
+  createdAt: Date
+}
+
+/**
+ * Look up a user's PUBLIC profile by handle. Deliberately omits email and
+ * username — the real identity is never exposed through this surface.
+ */
+export function getProfileByHandle(handle: string): PublicProfile | undefined {
+  const u = getDb().select().from(users).where(eq(users.handle, handle)).get()
+  if (!u || u.status === 'suspended') return undefined
+  return {
+    id: u.id,
+    handle: u.handle,
+    displayName: u.displayName,
+    avatarPath: u.avatarPath,
+    bio: u.bio,
+    role: u.role,
+    isAnonymous: u.isAnonymous,
+    allowSupporterDms: u.allowSupporterDms,
+    createdAt: u.createdAt,
+  }
 }

@@ -117,6 +117,26 @@ export async function processAndStoreImage(file: File): Promise<StoredImage> {
   return { kind: 'image', path: relPath, thumbPath, mime, width, height }
 }
 
+/**
+ * Process and store an avatar: square cover-crop, ~256px, webp, metadata
+ * stripped (same anonymity guarantee as post images). Returns the relative path.
+ */
+export async function processAndStoreAvatar(file: File): Promise<{ path: string } | null> {
+  try {
+    const buf = Buffer.from(await file.arrayBuffer())
+    const out = await sharp(buf)
+      .rotate()
+      .resize(256, 256, { fit: 'cover', position: 'attention' })
+      .webp({ quality: 85 })
+      .toBuffer()
+    const relPath = `${datedRelDir()}/avatar_${randName()}.webp`
+    await writeMedia(relPath, out)
+    return { path: relPath }
+  } catch {
+    return null
+  }
+}
+
 /** Store an uploaded audio file as-is (no transcoding in v1). */
 export async function storeAudio(file: File): Promise<StoredAudio> {
   const ext = AUDIO_EXT[file.type] ?? 'bin'
