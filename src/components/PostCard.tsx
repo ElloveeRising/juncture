@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Avatar } from './Avatar'
 import { TimeAgo } from './TimeAgo'
 import { PostMedia, type PostMediaView } from './PostMedia'
+import { LinkPreviewCard, type LinkPreviewView } from './LinkPreviewCard'
 import { editPostAction, deletePostAction } from '@/app/(app)/feed/post-actions'
 import { POST_MAX, type PostState } from '@/lib/post-constants'
 
@@ -23,6 +24,7 @@ export type PostCardData = {
     role: 'admin' | 'creator' | 'supporter'
   }
   media: PostMediaView[]
+  linkPreview: LinkPreviewView | null
 }
 
 function SaveBtn() {
@@ -110,6 +112,7 @@ export function PostCard({
                 </p>
               )}
               {post.media.length > 0 && <PostMedia media={post.media} />}
+              {post.linkPreview && <LinkPreviewCard preview={post.linkPreview} />}
             </>
           )}
 

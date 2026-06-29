@@ -31,6 +31,7 @@ export default async function FeedPage() {
       width: m.width,
       height: m.height,
     })),
+    linkPreview: p.linkPreview,
   }))
 
   return (

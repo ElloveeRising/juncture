@@ -10,6 +10,9 @@ import {
   AUDIO_ACCEPT,
   MAX_IMAGES_PER_POST,
 } from '@/lib/media-constants'
+import { LinkPreviewCard, type LinkPreviewView } from './LinkPreviewCard'
+
+const CLIENT_URL_RE = /\bhttps?:\/\/[^\s<>"')\]]+/i
 
 function SubmitBtn() {
   const { pending } = useFormStatus()
@@ -27,6 +30,9 @@ export function Composer({ displayName }: { displayName: string }) {
   const audioInputRef = useRef<HTMLInputElement>(null)
   const [previews, setPreviews] = useState<string[]>([])
   const [audioName, setAudioName] = useState<string | null>(null)
+  const [body, setBody] = useState('')
+  const [link, setLink] = useState<LinkPreviewView | null>(null)
+  const [dismissedUrl, setDismissedUrl] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -37,9 +43,37 @@ export function Composer({ displayName }: { displayName: string }) {
         return []
       })
       setAudioName(null)
+      setBody('')
+      setLink(null)
+      setDismissedUrl(null)
       router.refresh()
     }
   }, [state.ok, router])
+
+  // Live OpenGraph unfurl of the first link as you type (debounced).
+  useEffect(() => {
+    const m = CLIENT_URL_RE.exec(body)
+    const url = m ? m[0].replace(/[.,;:!?]+$/, '') : null
+    if (!url || url === dismissedUrl) {
+      setLink(null)
+      return
+    }
+    let cancelled = false
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/unfurl?url=${encodeURIComponent(url)}`)
+        if (!res.ok) return
+        const data = (await res.json()) as { preview: LinkPreviewView | null }
+        if (!cancelled) setLink(data.preview)
+      } catch {
+        /* ignore — preview is optional */
+      }
+    }, 700)
+    return () => {
+      cancelled = true
+      clearTimeout(t)
+    }
+  }, [body, dismissedUrl])
 
   // Clean up object URLs on unmount.
   useEffect(() => () => previews.forEach(URL.revokeObjectURL), [previews])
@@ -68,7 +102,25 @@ export function Composer({ displayName }: { displayName: string }) {
           className="vt-textarea"
           placeholder={`What's on your mind, ${displayName}?`}
           maxLength={POST_MAX}
+          onChange={(e) => setBody(e.target.value)}
         />
+
+        {link && (
+          <div className="relative">
+            <LinkPreviewCard preview={link} />
+            <button
+              type="button"
+              title="Remove preview"
+              className="absolute top-1 right-1 bg-white/90 border border-[#d8dfea] rounded px-1 text-xs text-[#666]"
+              onClick={() => {
+                setDismissedUrl(link.url)
+                setLink(null)
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Hidden file inputs, triggered by the toolbar buttons */}
         <input

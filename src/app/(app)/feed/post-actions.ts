@@ -19,6 +19,7 @@ import {
   type StoredImage,
   type StoredAudio,
 } from '@/lib/media'
+import { extractFirstUrl, createPostLinkPreview } from '@/lib/linkpreview'
 
 export async function createPostAction(
   _prev: PostState,
@@ -103,6 +104,10 @@ export async function createPostAction(
         .run()
     }
   }
+
+  // Unfurl the first link in the body (best-effort; never blocks/fails the post).
+  const firstUrl = extractFirstUrl(body)
+  if (firstUrl) await createPostLinkPreview(postId, firstUrl)
 
   revalidatePath('/feed')
   return { ok: true }

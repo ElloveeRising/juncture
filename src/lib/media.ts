@@ -126,6 +126,29 @@ export async function storeAudio(file: File): Promise<StoredAudio> {
   return { kind: 'audio', path: relPath, mime: file.type }
 }
 
+/**
+ * Process and store an image we fetched ourselves (e.g. a link-preview image),
+ * given its raw bytes. Re-encoded to webp and stripped of metadata, exactly like
+ * uploads — so we never hotlink an external host (which would leak member IPs)
+ * and never store someone else's EXIF. Returns null on any failure.
+ */
+export async function storeFetchedImage(
+  buf: Buffer,
+): Promise<{ path: string; width: number; height: number } | null> {
+  try {
+    const out = await sharp(buf)
+      .rotate()
+      .resize(1000, 1000, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer({ resolveWithObject: true })
+    const relPath = `${datedRelDir()}/${randName()}.webp`
+    await writeMedia(relPath, out.data)
+    return { path: relPath, width: out.info.width, height: out.info.height }
+  } catch {
+    return null
+  }
+}
+
 export function isAllowedImage(file: File): boolean {
   return (IMAGE_MIMES as readonly string[]).includes(file.type)
 }

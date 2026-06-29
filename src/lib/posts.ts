@@ -1,7 +1,7 @@
 import 'server-only'
 import { and, desc, eq, isNull, notInArray, inArray, asc } from 'drizzle-orm'
 import { getDb } from '@/db'
-import { posts, users, blocks, mutes, postMedia } from '@/db/schema'
+import { posts, users, blocks, mutes, postMedia, linkPreviews } from '@/db/schema'
 
 export type FeedAuthor = {
   id: number
@@ -22,6 +22,13 @@ export type PostMediaItem = {
   height: number | null
 }
 
+export type LinkPreviewItem = {
+  url: string
+  title: string | null
+  description: string | null
+  imagePath: string | null
+}
+
 export type FeedPost = {
   id: number
   body: string | null
@@ -29,6 +36,7 @@ export type FeedPost = {
   editedAt: Date | null
   author: FeedAuthor
   media: PostMediaItem[]
+  linkPreview: LinkPreviewItem | null
 }
 
 const FEED_LIMIT = 50
@@ -111,6 +119,26 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
     }
   }
 
+  // One link preview per post (we only ever create one).
+  const previewByPost = new Map<number, LinkPreviewItem>()
+  if (postIds.length) {
+    const previewRows = db
+      .select()
+      .from(linkPreviews)
+      .where(inArray(linkPreviews.postId, postIds))
+      .all()
+    for (const p of previewRows) {
+      if (!previewByPost.has(p.postId)) {
+        previewByPost.set(p.postId, {
+          url: p.url,
+          title: p.title,
+          description: p.description,
+          imagePath: p.imagePath,
+        })
+      }
+    }
+  }
+
   return rows.map((r) => ({
     id: r.id,
     body: r.body,
@@ -125,6 +153,7 @@ export function getFeedPosts(viewerId: number): FeedPost[] {
       isAnonymous: r.isAnonymous,
     },
     media: mediaByPost.get(r.id) ?? [],
+    linkPreview: previewByPost.get(r.id) ?? null,
   }))
 }
 
