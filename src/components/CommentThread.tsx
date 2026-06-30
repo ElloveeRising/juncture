@@ -8,6 +8,7 @@ import { Avatar } from './Avatar'
 import { TimeAgo } from './TimeAgo'
 import { LikeButton } from './LikeButton'
 import { CommentComposer } from './CommentComposer'
+import { ReportButton } from './ReportButton'
 import { editCommentAction, deleteCommentAction } from '@/app/(app)/feed/comment-actions'
 import { COMMENT_MAX, type CommentState } from '@/lib/comment-constants'
 
@@ -140,6 +141,7 @@ function CommentItem({
                 </button>
               </form>
             )}
+            {!isOwner && <ReportButton targetType="comment" targetId={c.id} />}
           </div>
         )}
 

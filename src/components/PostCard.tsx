@@ -10,6 +10,7 @@ import { PostMedia, type PostMediaView } from './PostMedia'
 import { LinkPreviewCard, type LinkPreviewView } from './LinkPreviewCard'
 import { LikeButton } from './LikeButton'
 import { CommentThread, type CommentNode } from './CommentThread'
+import { ReportButton } from './ReportButton'
 import { editPostAction, deletePostAction } from '@/app/(app)/feed/post-actions'
 import { POST_MAX, type PostState } from '@/lib/post-constants'
 
@@ -165,6 +166,11 @@ export function PostCard({
                 <span className="text-sm text-[#999]">
                   {commentCount} comment{commentCount === 1 ? '' : 's'}
                 </span>
+                {!isOwner && (
+                  <span className="ml-auto">
+                    <ReportButton targetType="post" targetId={post.id} />
+                  </span>
+                )}
               </div>
               <CommentThread
                 postId={post.id}

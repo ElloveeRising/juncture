@@ -4,9 +4,11 @@ import { requireUser } from '@/lib/auth'
 import { getProfileByHandle, getPostsByAuthor } from '@/lib/posts'
 import { toPostCardData } from '@/lib/post-serialize'
 import { canInitiateDm } from '@/lib/dm'
+import { hasBlocked, hasMuted } from '@/lib/relationships'
 import { mediaUrl } from '@/lib/urls'
 import { Avatar } from '@/components/Avatar'
 import { PostCard } from '@/components/PostCard'
+import { ProfileSafetyControls } from '@/components/ProfileSafetyControls'
 import { startConversationAction } from '@/app/(app)/messages/dm-actions'
 
 export const dynamic = 'force-dynamic'
@@ -33,6 +35,8 @@ export default async function ProfilePage({
 
   const isSelf = profile.id === viewer.id
   const cards = getPostsByAuthor(profile.id, viewer.id).map(toPostCardData)
+  const blocked = !isSelf && hasBlocked(viewer.id, profile.id)
+  const muted = !isSelf && hasMuted(viewer.id, profile.id)
 
   // Show a Message button only when the DM matrix permits it.
   const canMessage =
@@ -81,11 +85,26 @@ export default async function ProfilePage({
                   </button>
                 </form>
               )}
-              {/* Block / mute / report arrive in M9. */}
             </div>
+            {!isSelf && (
+              <div className="mt-3 pt-2 border-t border-[#eee]">
+                <ProfileSafetyControls
+                  targetId={profile.id}
+                  initialBlocked={blocked}
+                  initialMuted={muted}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {blocked && (
+        <div className="vt-card p-4 text-sm text-[#666]">
+          You’ve blocked this person. Their posts are hidden and you can’t message each other.
+          Unblock above to restore.
+        </div>
+      )}
 
       <h2 className="text-sm font-bold text-[#666] px-1">
         {isSelf ? 'Your posts' : `Posts by ${profile.displayName}`}
