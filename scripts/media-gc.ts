@@ -28,8 +28,10 @@
  *     orphan — a missing DB must never nuke the whole media tree.
  *   • Age guard: a file newer than --min-age minutes (default 60) is NEVER
  *     deleted, because it may have just been uploaded/fetched and not yet
- *     committed to its row. We use the most recent of mtime/ctime/birthtime so a
- *     file is treated as "recent" if ANY timestamp is recent.
+ *     committed to its row. "Age" is the newer of mtime/birthtime — both track
+ *     when the bytes were written. We deliberately ignore ctime/atime, which
+ *     sync clients (OneDrive) and nightly backups bump without the file being
+ *     new, and which would otherwise make the GC skip everything forever.
  *   • Only paths strictly under the media dir are ever touched.
  *
  * Usage
@@ -241,8 +243,9 @@ async function main(): Promise<void> {
     totalSize += st.size
     if (referenced.has(rel)) continue
 
-    // Treat the file as "recent" if ANY timestamp is recent — maximally cautious.
-    const newest = Math.max(st.mtimeMs, st.ctimeMs, st.birthtimeMs || 0)
+    // Use write/creation time only. ctime & atime get bumped by sync clients
+    // and backups, so including them would make day-old files look brand new.
+    const newest = Math.max(st.mtimeMs, st.birthtimeMs || 0)
     const ageMs = now - newest
     const info: OrphanInfo = { rel, abs, size: st.size, ageMs }
     if (ageMs < minAgeMs) skippedTooNew.push(info)

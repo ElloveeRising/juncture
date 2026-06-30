@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation'
 import { requireUser } from '@/lib/auth'
 import { getProfileByHandle, getPostsByAuthor } from '@/lib/posts'
 import { toPostCardData } from '@/lib/post-serialize'
+import { canInitiateDm } from '@/lib/dm'
 import { mediaUrl } from '@/lib/urls'
 import { Avatar } from '@/components/Avatar'
 import { PostCard } from '@/components/PostCard'
+import { startConversationAction } from '@/app/(app)/messages/dm-actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +33,14 @@ export default async function ProfilePage({
 
   const isSelf = profile.id === viewer.id
   const cards = getPostsByAuthor(profile.id, viewer.id).map(toPostCardData)
+
+  // Show a Message button only when the DM matrix permits it.
+  const canMessage =
+    !isSelf &&
+    canInitiateDm(
+      { id: viewer.id, role: viewer.role, status: 'active', allowSupporterDms: viewer.allowSupporterDms },
+      { id: profile.id, role: profile.role, status: 'active', allowSupporterDms: profile.allowSupporterDms },
+    ).ok
 
   return (
     <div className="space-y-4">
@@ -63,7 +73,15 @@ export default async function ProfilePage({
                   Edit profile
                 </Link>
               )}
-              {/* Block / mute / report / message arrive in M8–M9. */}
+              {canMessage && (
+                <form action={startConversationAction}>
+                  <input type="hidden" name="recipientId" value={profile.id} />
+                  <button type="submit" className="vt-btn text-xs">
+                    Message
+                  </button>
+                </form>
+              )}
+              {/* Block / mute / report arrive in M9. */}
             </div>
           </div>
         </div>

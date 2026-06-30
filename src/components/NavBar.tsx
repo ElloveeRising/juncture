@@ -17,7 +17,27 @@ function RoleBadge({ role }: { role: CurrentUser['role'] }) {
   )
 }
 
-export function NavBar({ user, unread = 0 }: { user: CurrentUser; unread?: number }) {
+function Badge({ n }: { n: number }) {
+  if (n <= 0) return null
+  return (
+    <span
+      className="ml-1 inline-flex items-center justify-center text-xs font-bold rounded-full px-1.5"
+      style={{ background: '#e53935', color: '#fff', minWidth: 18 }}
+    >
+      {n > 99 ? '99+' : n}
+    </span>
+  )
+}
+
+export function NavBar({
+  user,
+  unread = 0,
+  unreadDms = 0,
+}: {
+  user: CurrentUser
+  unread?: number
+  unreadDms?: number
+}) {
   return (
     <header style={{ background: 'var(--chrome)' }} className="border-b border-[#2b4a8b]">
       <div className="max-w-5xl mx-auto px-3 flex items-center gap-4 h-11">
@@ -28,16 +48,13 @@ export function NavBar({ user, unread = 0 }: { user: CurrentUser; unread?: numbe
           <Link href="/feed" className="text-white hover:underline">
             Feed
           </Link>
-          <Link href="/notifications" className="text-white hover:underline relative">
+          <Link href="/messages" className="text-white hover:underline">
+            Messages
+            <Badge n={unreadDms} />
+          </Link>
+          <Link href="/notifications" className="text-white hover:underline">
             Notifications
-            {unread > 0 && (
-              <span
-                className="ml-1 inline-flex items-center justify-center text-xs font-bold rounded-full px-1.5"
-                style={{ background: '#e53935', color: '#fff', minWidth: 18 }}
-              >
-                {unread > 99 ? '99+' : unread}
-              </span>
-            )}
+            <Badge n={unread} />
           </Link>
           <Link href={`/u/${user.handle}`} className="text-white hover:underline">
             Profile
