@@ -1,4 +1,4 @@
-import { getCurrentUser, canPost } from '@/lib/auth'
+import { requireUser, canPost } from '@/lib/auth'
 import { getFeedPosts } from '@/lib/posts'
 import { toPostCardData } from '@/lib/post-serialize'
 import { Composer } from '@/components/Composer'
@@ -9,7 +9,7 @@ import { FeedAutoRefresh } from '@/components/FeedAutoRefresh'
 export const dynamic = 'force-dynamic'
 
 export default async function FeedPage() {
-  const user = (await getCurrentUser())!
+  const user = await requireUser()
   const cards = getFeedPosts(user.id).map(toPostCardData)
 
   return (

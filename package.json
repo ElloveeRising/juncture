@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "media-gc": "tsx scripts/media-gc.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.0",
