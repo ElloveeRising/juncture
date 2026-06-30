@@ -8,7 +8,7 @@ function RoleBadge({ role }: { role: CurrentUser['role'] }) {
   const bg = role === 'admin' ? '#8b1a1a' : role === 'creator' ? '#2d5a2d' : '#555'
   return (
     <span
-      className="text-xs px-1.5 py-0.5 rounded text-white"
+      className="text-xs px-1.5 py-0.5 rounded text-white whitespace-nowrap"
       style={{ background: bg }}
       title={`You are a ${label.toLowerCase()}`}
     >
@@ -39,41 +39,58 @@ export function NavBar({
   unreadDms?: number
 }) {
   return (
-    <header style={{ background: 'var(--chrome)' }} className="border-b border-[#2b4a8b]">
-      <div className="max-w-5xl mx-auto px-3 flex items-center gap-4 h-11">
-        <Link href="/feed" className="font-bold text-white text-lg hover:no-underline">
+    <header
+      style={{ background: 'linear-gradient(to bottom, #4a69a0, #3b5998)' }}
+      className="border-b border-[#2b4a8b]"
+    >
+      <div className="max-w-5xl mx-auto px-3 flex items-center gap-3 h-11">
+        <Link
+          href="/feed"
+          className="font-bold text-white text-lg hover:no-underline shrink-0"
+        >
           {APP_NAME}
         </Link>
-        <nav className="flex items-center gap-3 text-white text-sm">
-          <Link href="/feed" className="text-white hover:underline">
+
+        {/* Primary nav — scrolls horizontally on small screens so every link
+            stays reachable without crowding the bar. */}
+        <nav
+          className="flex-1 flex items-center gap-3 text-white text-sm overflow-x-auto whitespace-nowrap"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          <Link href="/feed" className="text-white hover:underline shrink-0">
             Feed
           </Link>
-          <Link href="/messages" className="text-white hover:underline">
+          <Link href="/messages" className="text-white hover:underline shrink-0">
             Messages
             <Badge n={unreadDms} />
           </Link>
-          <Link href="/notifications" className="text-white hover:underline">
+          <Link href="/notifications" className="text-white hover:underline shrink-0">
             Notifications
             <Badge n={unread} />
           </Link>
-          <Link href={`/u/${user.handle}`} className="text-white hover:underline">
+          <Link href={`/u/${user.handle}`} className="text-white hover:underline shrink-0">
             Profile
           </Link>
+          <Link href="/settings" className="text-white hover:underline shrink-0">
+            Settings
+          </Link>
           {user.role === 'admin' && (
-            <Link href="/admin" className="text-white hover:underline">
+            <Link href="/admin" className="text-white hover:underline shrink-0">
               Admin
             </Link>
           )}
         </nav>
-        <div className="ml-auto flex items-center gap-3 text-white text-sm">
-          <span className="hidden sm:inline opacity-90">{user.displayName}</span>
-          <RoleBadge role={user.role} />
-          <Link href="/settings" className="text-white hover:underline">
-            Settings
-          </Link>
+
+        <div className="ml-auto flex items-center gap-2 text-white text-sm shrink-0">
+          <span className="hidden md:inline opacity-90 max-w-[120px] truncate">
+            {user.displayName}
+          </span>
+          <span className="hidden sm:inline">
+            <RoleBadge role={user.role} />
+          </span>
           <form action={logoutAction}>
-            <button type="submit" className="text-white hover:underline">
-              Log out
+            <button type="submit" className="text-white hover:underline whitespace-nowrap">
+              Log&nbsp;out
             </button>
           </form>
         </div>
