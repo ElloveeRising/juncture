@@ -1,0 +1,30 @@
+[Unit]
+Description=Juncture — a private social network for A Schell Company
+After=network.target
+
+[Service]
+Type=simple
+
+# --- EDIT THESE for your box ------------------------------------------------
+# The Linux user that owns the app files (NOT root). e.g. ryan
+User=ryan
+# Where you cloned the repo.
+WorkingDirectory=/opt/juncture
+# Your env file (copied from .env.example and filled in).
+EnvironmentFile=/opt/juncture/.env
+# ---------------------------------------------------------------------------
+
+# Start the production build (run `npm run build` first — see DEPLOY.md).
+# `next start` sets NODE_ENV=production automatically, which turns on Secure cookies.
+ExecStart=/usr/bin/env npm run start
+
+# Self-healing: restart on crash, start on boot.
+Restart=always
+RestartSec=5
+
+# Reasonable hardening (the app only needs its own files + DATA_DIR).
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
