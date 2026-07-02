@@ -51,3 +51,40 @@ export async function bootstrapAdmin(): Promise<void> {
       'Remove ADMIN_BOOTSTRAP_PASSWORD from your environment now.',
   )
 }
+
+/**
+ * Founding trio, co-equal by design. FOUNDER_EMAILS is a comma-separated list
+ * (e.g. Ryan, Jesse, Ali). Runs on EVERY boot and is idempotent: the moment a
+ * listed person signs up (a normal account, their own password), they're raised
+ * to arbiter automatically — nobody has to "grant" anybody. No shared passwords,
+ * no first-among-equals. Each promotion is logged in creator_grants once.
+ */
+export function founderEmails(): Set<string> {
+  return new Set(
+    (process.env.FOUNDER_EMAILS ?? '')
+      .split(',')
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean),
+  )
+}
+
+export function isFounderEmail(email: string): boolean {
+  return founderEmails().has(email.trim().toLowerCase())
+}
+
+export async function seedFounders(): Promise<void> {
+  const emails = founderEmails()
+  if (!emails.size) return
+
+  const db = getDb()
+  for (const email of emails) {
+    const u = db.select().from(users).where(eq(users.email, email)).get()
+    if (!u) continue // hasn't signed up yet — they'll be promoted when they do
+    if (u.role === 'admin') continue // already co-equal
+    db.update(users).set({ role: 'admin' }).where(eq(users.id, u.id)).run()
+    db.insert(creatorGrants)
+      .values({ userId: u.id, grantedBy: u.id, note: '[arbiter] Founding member of A Schell Company' })
+      .run()
+    console.log(`[juncture] ${email} recognized as a founding arbiter.`)
+  }
+}

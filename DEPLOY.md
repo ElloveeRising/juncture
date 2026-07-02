@@ -51,7 +51,14 @@ Set, at minimum:
 | `PORT` | `3100` (any free local port; the tunnel maps to it) |
 | `DATA_DIR` | `/opt/juncture/data` (the DB + media live here) |
 | `SESSION_SECRET` | a long random string — generate with `openssl rand -base64 48` |
-| `ADMIN_BOOTSTRAP_EMAIL` / `_USERNAME` / `_PASSWORD` | your first admin login (used once) |
+| `ADMIN_BOOTSTRAP_EMAIL` / `_USERNAME` / `_PASSWORD` | the very first admin login (used once) |
+| `FOUNDER_EMAILS` | comma-separated emails of the founding trio (Ryan, Jesse, Ali) — each becomes a co-equal arbiter the moment they sign up |
+
+> **The founding trio start co-equal.** Put Ryan's, Jesse's, and Ali's real
+> emails in `FOUNDER_EMAILS`. When each of them signs up (a normal account, their
+> own password), they come straight in as an arbiter — nobody has to promote
+> anyone. `ADMIN_BOOTSTRAP_*` just seeds the very first admin so setup has
+> someone to log in as; the three founders are equal regardless of who that was.
 
 > `BASE_URL` matters in production: it makes session cookies `Secure` and
 > allow-lists your public domain for form submissions (server actions). If forms

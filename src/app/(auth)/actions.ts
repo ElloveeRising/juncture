@@ -6,6 +6,8 @@ import { getDb } from '@/db'
 import { users } from '@/db/schema'
 import { hashPassword, verifyPassword, getDummyHash } from '@/lib/password'
 import { createSession } from '@/lib/session'
+import { isFounderEmail } from '@/db/bootstrap'
+import { creatorGrants } from '@/db/schema'
 import { rateLimit, clientIp } from '@/lib/ratelimit'
 import {
   normalizeUsername,
@@ -41,6 +43,10 @@ export async function signupAction(
 
   const passwordHash = await hashPassword(p.value!)
 
+  // The founding trio (Ryan, Jesse, Ali) start co-equal: if this email is on
+  // the founders list, they come in as an arbiter, not a supporter.
+  const founder = isFounderEmail(e.value!)
+
   let newUserId: number
   try {
     const result = getDb()
@@ -49,12 +55,18 @@ export async function signupAction(
         username: u.value!,
         email: e.value!,
         passwordHash,
-        role: 'supporter', // everyone starts as a supporter — posting is earned
+        role: founder ? 'admin' : 'supporter', // otherwise posting is earned
         displayName: u.value!,
         handle: u.value!,
       })
       .run()
     newUserId = Number(result.lastInsertRowid)
+    if (founder) {
+      getDb()
+        .insert(creatorGrants)
+        .values({ userId: newUserId, grantedBy: newUserId, note: '[arbiter] Founding member of A Schell Company' })
+        .run()
+    }
   } catch (err) {
     const field = uniqueConstraintField(err)
     if (field === 'username' || field === 'handle') {
