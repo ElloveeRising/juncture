@@ -68,24 +68,38 @@ export function getCommentsForPosts(
     viewerId,
   )
 
+  // Tombstoned comments (deleted, or by a blocked/muted author) must not leak
+  // the author's identity in the serialized payload — the UI shows "Someone",
+  // and the data underneath says nothing more.
+  const SCRUBBED: CommentAuthor = {
+    id: 0,
+    handle: '',
+    displayName: 'Someone',
+    avatarPath: null,
+    role: 'supporter',
+  }
+
   const nodes = new Map<number, CommentView>()
   for (const r of rows) {
     const hidden = hiddenAuthorIds.has(r.authorId)
+    const tombstone = !!r.deletedAt || hidden
     nodes.set(r.id, {
       id: r.id,
       postId: r.postId,
       parentId: r.parentId,
-      body: r.deletedAt || hidden ? null : r.body,
-      deleted: !!r.deletedAt || hidden,
+      body: tombstone ? null : r.body,
+      deleted: tombstone,
       createdAt: r.createdAt,
       editedAt: r.editedAt,
-      author: {
-        id: r.authorId,
-        handle: r.handle,
-        displayName: r.displayName,
-        avatarPath: r.avatarPath,
-        role: r.role,
-      },
+      author: tombstone
+        ? SCRUBBED
+        : {
+            id: r.authorId,
+            handle: r.handle,
+            displayName: r.displayName,
+            avatarPath: r.avatarPath,
+            role: r.role,
+          },
       reactions: reactionSummaries.get(r.id) ?? { likeCount: 0, likedByMe: false },
       replies: [],
     })

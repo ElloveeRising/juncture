@@ -84,6 +84,13 @@ export async function loginAction(
     return { error: 'Enter your username/email and password.' }
   }
 
+  // Second limiter keyed by the account being targeted — an attacker spoofing
+  // X-Forwarded-For (when not behind the tunnel) still can't hammer one account.
+  const rlId = rateLimit(`login-id:${identifier}`, 10, 15 * 60 * 1000)
+  if (!rlId.ok) {
+    return { error: `Too many attempts. Try again in ${rlId.retryAfterSec} seconds.` }
+  }
+
   const user = getDb()
     .select()
     .from(users)

@@ -79,31 +79,35 @@ export async function createPostAction(
     return { error: 'Could not process one of your uploads. Please try again.' }
   }
 
+  // Post + media rows commit atomically — a failure mid-way can't leave a
+  // half-written post in the feed.
   const db = getDb()
-  const res = db.insert(posts).values({ authorId: user.id, body: body || null }).run()
-  const postId = Number(res.lastInsertRowid)
-
-  let position = 0
-  for (const m of stored) {
-    if (m.kind === 'image') {
-      db.insert(postMedia)
-        .values({
-          postId,
-          kind: 'image',
-          path: m.path,
-          thumbPath: m.thumbPath,
-          mime: m.mime,
-          width: m.width,
-          height: m.height,
-          position: position++,
-        })
-        .run()
-    } else {
-      db.insert(postMedia)
-        .values({ postId, kind: 'audio', path: m.path, mime: m.mime, position: position++ })
-        .run()
+  const postId = db.transaction((tx) => {
+    const res = tx.insert(posts).values({ authorId: user.id, body: body || null }).run()
+    const id = Number(res.lastInsertRowid)
+    let position = 0
+    for (const m of stored) {
+      if (m.kind === 'image') {
+        tx.insert(postMedia)
+          .values({
+            postId: id,
+            kind: 'image',
+            path: m.path,
+            thumbPath: m.thumbPath,
+            mime: m.mime,
+            width: m.width,
+            height: m.height,
+            position: position++,
+          })
+          .run()
+      } else {
+        tx.insert(postMedia)
+          .values({ postId: id, kind: 'audio', path: m.path, mime: m.mime, position: position++ })
+          .run()
+      }
     }
-  }
+    return id
+  })
 
   // Unfurl the first link in the body (best-effort; never blocks/fails the post).
   const firstUrl = extractFirstUrl(body)

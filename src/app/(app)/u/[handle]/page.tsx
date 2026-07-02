@@ -35,6 +35,12 @@ export default async function ProfilePage({
   if (!profile) notFound()
 
   const isSelf = profile.id === viewer.id
+
+  // If this member has blocked the viewer, the profile simply doesn't exist
+  // for them — a block severs visibility both directions, and a 404 discloses
+  // nothing about whether a block is the reason.
+  if (!isSelf && hasBlocked(profile.id, viewer.id)) notFound()
+
   const cards = getPostsByAuthor(profile.id, viewer.id).map(toPostCardData)
   const blocked = !isSelf && hasBlocked(viewer.id, profile.id)
   const muted = !isSelf && hasMuted(viewer.id, profile.id)

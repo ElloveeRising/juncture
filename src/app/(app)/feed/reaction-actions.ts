@@ -5,6 +5,7 @@ import { getDb } from '@/db'
 import { reactions, posts, comments } from '@/db/schema'
 import { requireUser } from '@/lib/auth'
 import { rateLimit } from '@/lib/ratelimit'
+import { blockedEitherWay } from '@/lib/relationships'
 import { notify } from '@/lib/notifications'
 
 export type ToggleResult = { liked: boolean; count: number; error?: string }
@@ -51,6 +52,10 @@ export async function toggleReaction(
   }
   const authorId = targetAuthorId(targetType, targetId)
   if (authorId === null) {
+    return { liked: false, count: 0, error: 'That content is gone.' }
+  }
+  // A block severs reactions too — same generic error, block not disclosed.
+  if (blockedEitherWay(user.id, authorId)) {
     return { liked: false, count: 0, error: 'That content is gone.' }
   }
 

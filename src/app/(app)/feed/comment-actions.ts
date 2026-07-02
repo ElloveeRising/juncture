@@ -7,6 +7,7 @@ import { comments } from '@/db/schema'
 import { requireUser } from '@/lib/auth'
 import { rateLimit } from '@/lib/ratelimit'
 import { getPostById } from '@/lib/posts'
+import { blockedEitherWay } from '@/lib/relationships'
 import { getCommentById, topLevelAncestorId } from '@/lib/comments'
 import { notify } from '@/lib/notifications'
 import { COMMENT_MAX, type CommentState } from '@/lib/comment-constants'
@@ -31,6 +32,9 @@ export async function addCommentAction(
 
   const post = getPostById(postId)
   if (!post || post.deletedAt) return { error: 'Post not found.' }
+  // A block severs interaction both ways. Same generic error as a missing
+  // post so the block itself isn't disclosed.
+  if (blockedEitherWay(user.id, post.authorId)) return { error: 'Post not found.' }
 
   // Enforce a single level of threading: a reply always attaches to the
   // top-level ancestor, never to another reply.

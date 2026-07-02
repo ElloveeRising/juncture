@@ -35,6 +35,7 @@ export default async function SettingsPage() {
         <h2 className="text-base font-bold mb-3">Public profile</h2>
         <ProfileForm
           initial={{
+            userId: user.id,
             displayName: user.displayName,
             handle: user.handle,
             bio: user.bio ?? '',

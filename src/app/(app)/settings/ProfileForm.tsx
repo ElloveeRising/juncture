@@ -9,9 +9,11 @@ import { BIO_MAX, type ProfileState } from '@/lib/profile-constants'
 import { IMAGE_ACCEPT, AUDIO_ACCEPT } from '@/lib/media-constants'
 import { ACCENTS, BACKGROUNDS, type AccentKey, type BgKey } from '@/lib/profile-themes'
 
-// Draft persistence: everything you type is kept (per tab) until you save,
-// so navigating away — or anything else — can never eat your words again.
-const DRAFT_KEY = 'juncture:profile-draft'
+// Draft persistence: everything you type is kept (per tab, per account) until
+// you save, so navigating away — or anything else — can never eat your words
+// again. Keyed by user id so drafts never bleed across accounts on a shared
+// browser.
+const draftKey = (userId: number) => `juncture:profile-draft:${userId}`
 
 type Draft = {
   displayName: string
@@ -75,12 +77,14 @@ export function ProfileForm({
   initial,
 }: {
   initial: Draft & {
+    userId: number
     avatarUrl: string | null
     songTitleSaved: string | null
     hasSong: boolean
     role: 'admin' | 'creator' | 'supporter'
   }
 }) {
+  const DRAFT_KEY = draftKey(initial.userId)
   const [state, action] = useActionState<ProfileState, FormData>(updateProfileAction, {})
   const router = useRouter()
   const avatarInputRef = useRef<HTMLInputElement>(null)

@@ -69,15 +69,25 @@ function CommentItem({
 
   return (
     <div className="flex gap-2">
-      <Link href={`/u/${c.author.handle}`} className="shrink-0 mt-0.5">
-        <Avatar displayName={c.author.displayName} src={c.author.avatarPath} size={28} />
-      </Link>
+      {c.deleted ? (
+        <span className="shrink-0 mt-0.5">
+          <Avatar displayName="?" src={null} size={28} />
+        </span>
+      ) : (
+        <Link href={`/u/${c.author.handle}`} className="shrink-0 mt-0.5">
+          <Avatar displayName={c.author.displayName} src={c.author.avatarPath} size={28} />
+        </Link>
+      )}
       <div className="min-w-0 flex-1">
         <div className="bg-[#f2f3f5] border border-[#e4e7ec] rounded px-2 py-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <Link href={`/u/${c.author.handle}`} className="text-sm font-bold text-[#333] hover:underline">
-              {c.deleted ? 'Someone' : c.author.displayName}
-            </Link>
+            {c.deleted ? (
+              <span className="text-sm font-bold text-[#999]">Someone</span>
+            ) : (
+              <Link href={`/u/${c.author.handle}`} className="text-sm font-bold text-[#333] hover:underline">
+                {c.author.displayName}
+              </Link>
+            )}
             <span className="text-xs text-[#999]">
               <TimeAgo iso={c.createdAtISO} />
               {c.editedAtISO && <span className="ml-1 italic">(edited)</span>}
