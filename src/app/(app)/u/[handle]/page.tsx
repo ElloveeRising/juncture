@@ -5,6 +5,7 @@ import { getProfileByHandle, getPostsByAuthor } from '@/lib/posts'
 import { toPostCardData } from '@/lib/post-serialize'
 import { canInitiateDm } from '@/lib/dm'
 import { hasBlocked, hasMuted } from '@/lib/relationships'
+import { resolveAccent, resolveBg } from '@/lib/profile-themes'
 import { mediaUrl } from '@/lib/urls'
 import { Avatar } from '@/components/Avatar'
 import { PostCard } from '@/components/PostCard'
@@ -14,7 +15,7 @@ import { startConversationAction } from '@/app/(app)/messages/dm-actions'
 export const dynamic = 'force-dynamic'
 
 function RoleBadge({ role }: { role: 'admin' | 'creator' | 'supporter' }) {
-  const label = role === 'admin' ? 'Admin' : role === 'creator' ? 'Creator' : 'Supporter'
+  const label = role === 'admin' ? 'Arbiter' : role === 'creator' ? 'Creator' : 'Supporter'
   const bg = role === 'admin' ? '#8b1a1a' : role === 'creator' ? '#2d5a2d' : '#555'
   return (
     <span className="text-xs px-1.5 py-0.5 rounded text-white" style={{ background: bg }}>
@@ -38,6 +39,10 @@ export default async function ProfilePage({
   const blocked = !isSelf && hasBlocked(viewer.id, profile.id)
   const muted = !isSelf && hasMuted(viewer.id, profile.id)
 
+  const accent = resolveAccent(profile.profileAccent)
+  const bg = resolveBg(profile.profileBg)
+  const onBgText = bg.dark ? 'rgba(255,255,255,0.75)' : '#666'
+
   // Show a Message button only when the DM matrix permits it.
   const canMessage =
     !isSelf &&
@@ -47,13 +52,19 @@ export default async function ProfilePage({
     ).ok
 
   return (
-    <div className="space-y-4">
-      <div className="vt-card p-4">
+    // Their space: the member's chosen backdrop wraps everything on their page.
+    <div
+      className="space-y-4 rounded border border-[#d8dfea] p-3 -m-1"
+      style={{ background: bg.color }}
+    >
+      <div className="vt-card p-4" style={{ borderTop: `3px solid ${accent.color}` }}>
         <div className="flex gap-4">
           <Avatar displayName={profile.displayName} src={mediaUrl(profile.avatarPath)} size={72} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl font-bold">{profile.displayName}</h1>
+              <h1 className="text-xl font-bold" style={{ color: accent.color }}>
+                {profile.displayName}
+              </h1>
               <RoleBadge role={profile.role} />
               {profile.isAnonymous && (
                 <span className="text-xs text-[#666]" title="This member keeps their real identity private">
@@ -97,6 +108,22 @@ export default async function ProfilePage({
             )}
           </div>
         </div>
+
+        {profile.profileSongPath && (
+          <div className="mt-3 pt-3 border-t border-[#eee]">
+            <div className="text-xs font-bold mb-1" style={{ color: accent.color }}>
+              ♫ {profile.profileSongTitle || 'Profile song'}
+            </div>
+            <audio
+              controls
+              preload="none"
+              className="w-full max-w-md"
+              src={`/media/${profile.profileSongPath}`}
+            >
+              Your browser does not support audio playback.
+            </audio>
+          </div>
+        )}
       </div>
 
       {blocked && (
@@ -106,7 +133,7 @@ export default async function ProfilePage({
         </div>
       )}
 
-      <h2 className="text-sm font-bold text-[#666] px-1">
+      <h2 className="text-sm font-bold px-1" style={{ color: onBgText }}>
         {isSelf ? 'Your posts' : `Posts by ${profile.displayName}`}
       </h2>
 

@@ -20,6 +20,10 @@ export type CurrentUser = {
   isAnonymous: boolean
   allowSupporterDms: boolean
   status: 'active' | 'suspended'
+  profileSongPath: string | null
+  profileSongTitle: string | null
+  profileAccent: string | null
+  profileBg: string | null
 }
 
 // Cached per-request so multiple calls in one render don't re-hit the DB.
@@ -43,6 +47,10 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     isAnonymous: row.isAnonymous,
     allowSupporterDms: row.allowSupporterDms,
     status: row.status,
+    profileSongPath: row.profileSongPath,
+    profileSongTitle: row.profileSongTitle,
+    profileAccent: row.profileAccent,
+    profileBg: row.profileBg,
   }
 })
 

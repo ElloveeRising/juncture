@@ -29,7 +29,16 @@ export function LoginForm() {
           <label className="block text-sm text-[#666] mb-1" htmlFor="identifier">
             Username or email
           </label>
-          <input id="identifier" name="identifier" className="vt-input" autoComplete="username" required />
+          <input
+            id="identifier"
+            name="identifier"
+            className="vt-input"
+            autoComplete="username"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+          />
         </div>
         <div>
           <label className="block text-sm text-[#666] mb-1" htmlFor="password">

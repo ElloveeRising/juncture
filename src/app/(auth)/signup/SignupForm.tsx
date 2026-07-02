@@ -33,8 +33,20 @@ export function SignupForm() {
           <label className="block text-sm text-[#666] mb-1" htmlFor="username">
             Username
           </label>
-          <input id="username" name="username" className="vt-input" autoComplete="username" required />
-          <p className="text-xs text-[#999] mt-1">3–30 chars: lowercase letters, numbers, underscore.</p>
+          <input
+            id="username"
+            name="username"
+            className="vt-input"
+            autoComplete="username"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+          />
+          <p className="text-xs text-[#999] mt-1">
+            3–30 characters: lowercase letters, numbers, or underscore — no spaces.
+            Capitals are lowercased automatically.
+          </p>
         </div>
         <div>
           <label className="block text-sm text-[#666] mb-1" htmlFor="email">

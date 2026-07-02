@@ -27,6 +27,13 @@ export const users = sqliteTable('users', {
     .notNull()
     .default(false),
   status: text('status', { enum: ['active', 'suspended'] }).notNull().default('active'),
+  // "Your space" — MySpace-era profile customization. Song plays from the
+  // auth-checked /media route; colors are keys into a curated palette (never
+  // raw CSS from users).
+  profileSongPath: text('profile_song_path'),
+  profileSongTitle: text('profile_song_title'),
+  profileAccent: text('profile_accent'),
+  profileBg: text('profile_bg'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),

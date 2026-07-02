@@ -4,7 +4,7 @@ import type { CurrentUser } from '@/lib/auth'
 import { logoutAction } from '@/app/(app)/account-actions'
 
 function RoleBadge({ role }: { role: CurrentUser['role'] }) {
-  const label = role === 'admin' ? 'Admin' : role === 'creator' ? 'Creator' : 'Supporter'
+  const label = role === 'admin' ? 'Arbiter' : role === 'creator' ? 'Creator' : 'Supporter'
   const bg = role === 'admin' ? '#8b1a1a' : role === 'creator' ? '#2d5a2d' : '#555'
   return (
     <span

@@ -208,6 +208,10 @@ export type PublicProfile = {
   isAnonymous: boolean
   allowSupporterDms: boolean
   createdAt: Date
+  profileSongPath: string | null
+  profileSongTitle: string | null
+  profileAccent: string | null
+  profileBg: string | null
 }
 
 /**
@@ -227,5 +231,9 @@ export function getProfileByHandle(handle: string): PublicProfile | undefined {
     isAnonymous: u.isAnonymous,
     allowSupporterDms: u.allowSupporterDms,
     createdAt: u.createdAt,
+    profileSongPath: u.profileSongPath,
+    profileSongTitle: u.profileSongTitle,
+    profileAccent: u.profileAccent,
+    profileBg: u.profileBg,
   }
 }

@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { requireUser } from '@/lib/auth'
 import { mediaUrl } from '@/lib/urls'
-import { ChangePasswordForm } from './ChangePasswordForm'
 import { ProfileForm } from './ProfileForm'
 
 export default async function SettingsPage() {
@@ -9,11 +8,12 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-4">
       <div className="vt-card p-4">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h1 className="text-lg">Settings</h1>
-          <Link href={`/u/${user.handle}`} className="text-sm">
-            View my public profile →
-          </Link>
+          <div className="flex gap-3 text-sm">
+            <Link href={`/u/${user.handle}`}>View my public profile →</Link>
+            <Link href="/settings/password">Change password</Link>
+          </div>
         </div>
         <dl className="text-sm space-y-1">
           <div className="flex gap-2">
@@ -42,13 +42,13 @@ export default async function SettingsPage() {
             isAnonymous: user.isAnonymous,
             allowSupporterDms: user.allowSupporterDms,
             role: user.role,
+            profileAccent: user.profileAccent ?? 'classic',
+            profileBg: user.profileBg ?? 'default',
+            profileSongTitle: user.profileSongTitle ?? '',
+            songTitleSaved: user.profileSongTitle,
+            hasSong: !!user.profileSongPath,
           }}
         />
-      </div>
-
-      <div className="vt-card p-4">
-        <h2 className="text-base font-bold mb-3">Change password</h2>
-        <ChangePasswordForm />
       </div>
     </div>
   )
