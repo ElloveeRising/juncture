@@ -34,6 +34,61 @@ export async function promoteUserAction(
   return { ok: `Promoted @${u.handle} to creator.` }
 }
 
+/**
+ * Make a member a co-arbiter (admin) — e.g. Jesse and Ali. Arbiters can
+ * promote supporters to creators, so this writes a creator_grants row too
+ * (prefixed "[arbiter]") to keep the contribution-wall audit trail complete.
+ */
+export async function makeArbiterAction(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const admin = await requireAdmin()
+  const userId = Number(formData.get('userId'))
+  const note = String(formData.get('note') ?? '').trim()
+  if (!Number.isInteger(userId)) return { error: 'Invalid user.' }
+  if (userId === admin.id) return { error: 'You are already an arbiter.' }
+  if (!note) return { error: 'Add a note — who is this and what did they contribute? (logged)' }
+
+  const db = getDb()
+  const u = db.select().from(users).where(eq(users.id, userId)).get()
+  if (!u) return { error: 'User not found.' }
+  if (u.role === 'admin') return { error: 'Already an arbiter.' }
+  if (u.status === 'suspended') return { error: 'Reinstate them before making them an arbiter.' }
+
+  db.update(users).set({ role: 'admin' }).where(eq(users.id, userId)).run()
+  db.insert(creatorGrants)
+    .values({ userId, grantedBy: admin.id, note: `[arbiter] ${note}` })
+    .run()
+
+  revalidatePath('/admin/users')
+  return { ok: `@${u.handle} is now an arbiter.` }
+}
+
+/**
+ * Remove another arbiter's admin role. They become a creator (arbiters are
+ * creators by definition — their grant is already logged). You cannot remove
+ * yourself, which also guarantees at least one arbiter always remains.
+ */
+export async function removeArbiterAction(
+  _prev: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const admin = await requireAdmin()
+  const userId = Number(formData.get('userId'))
+  if (!Number.isInteger(userId)) return { error: 'Invalid user.' }
+  if (userId === admin.id) return { error: 'You cannot remove yourself as arbiter.' }
+
+  const db = getDb()
+  const u = db.select().from(users).where(eq(users.id, userId)).get()
+  if (!u) return { error: 'User not found.' }
+  if (u.role !== 'admin') return { error: 'Not an arbiter.' }
+
+  db.update(users).set({ role: 'creator' }).where(eq(users.id, userId)).run()
+  revalidatePath('/admin/users')
+  return { ok: `@${u.handle} is no longer an arbiter (still a creator).` }
+}
+
 export async function demoteUserAction(
   _prev: AdminActionState,
   formData: FormData,

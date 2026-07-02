@@ -1,11 +1,19 @@
 # Deploying Juncture
 
-This puts Juncture on your always-on NUC (Ubuntu 24.04) and exposes it to members
-over a free Cloudflare Tunnel — no port-forwarding, no exposed home IP.
+This puts Juncture on any always-on Ubuntu 24.04 box — your NUC, or Ali's server —
+and exposes it to members over a free Cloudflare Tunnel: no port-forwarding, no
+exposed home IP, and the tunnel dials *out*, so it works fine behind someone
+else's router with zero changes to their network.
 
-Everything is driven by one `.env` file, so the same build runs unchanged on a
-cloud VM later. Copy-paste these blocks; the only things you edit are in `.env`
-and the systemd unit.
+Everything is driven by one `.env` file, so the same build runs unchanged if it
+ever moves (Ali's box → a NUC → a cloud VM). Copy-paste these blocks; the only
+things you edit are in `.env` and the systemd unit.
+
+> **If Ali is hosting:** Ali runs steps 0–4 on his machine. Step 5 (the
+> Cloudflare tunnel) needs a Cloudflare account that controls the domain — that
+> can be yours or Ali's; whoever owns it runs the `cloudflared tunnel login`
+> step on Ali's box. Backups in step 6 point at whatever storage Ali has (or
+> skip rsync and just snapshot the DB locally — better than nothing).
 
 ---
 
