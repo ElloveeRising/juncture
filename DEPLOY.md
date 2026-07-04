@@ -30,7 +30,7 @@ node --version   # should print v20.x
 
 ```bash
 sudo mkdir -p /opt/juncture && sudo chown "$USER" /opt/juncture
-git clone <YOUR_REPO_URL> /opt/juncture
+git clone https://github.com/ElloveeRising/juncture.git /opt/juncture
 cd /opt/juncture
 npm ci
 ```
