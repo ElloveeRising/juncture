@@ -44,7 +44,7 @@ export function ProfileSafetyControls({
       <button
         className="vt-btn-ghost text-xs"
         onClick={onBlock}
-        style={blocked ? { color: '#2d5a2d' } : { color: '#8b1a1a' }}
+        style={blocked ? { color: '#2d7d5a' } : { color: '#c0503c' }}
       >
         {blocked ? 'Unblock' : 'Block'}
       </button>

@@ -4,14 +4,14 @@
 
 /* ── Root design tokens ─────────────────────────────────────────────────── */
 :root {
-  --chrome:       #3b5998;
-  --chrome-sec:   #6d84b4;
-  --chrome-light: #dce3ef;
-  --page-bg:      #e9ebee;
+  --chrome:       #1f8a7d;
+  --chrome-sec:   #35a893;
+  --chrome-light: #dff2ea;
+  --page-bg:      #f6f2ea;
   --card-bg:      #ffffff;
-  --border:       #d8dfea;
-  --link:         #3b5998;
-  --link-hover:   #2d4373;
+  --border:       #cfe5dd;
+  --link:         #1f8a7d;
+  --link-hover:   #c2543e;
   --text:         #333333;
   --text-muted:   #666666;
   --text-light:   #999999;
@@ -23,11 +23,16 @@
     @apply text-[#333] font-sans;
     font-size: 13px;
     line-height: 1.5;
-    /* GeoCities-grade tiled backdrop — a quiet diagonal weave, no image assets */
-    background-color: #e6e8ee;
+    /* Watercolor paper, a faint weave, and an 8-bit Dayton skyline pinned to
+       the bottom of the window (with a little Wright flyer overhead) — all
+       inline SVG/CSS, zero image assets. */
+    background-color: #f7f3ea;
     background-image:
-      repeating-linear-gradient(45deg, rgba(59, 89, 152, 0.03) 0 2px, transparent 2px 8px),
-      repeating-linear-gradient(-45deg, rgba(59, 89, 152, 0.03) 0 2px, transparent 2px 8px);
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='90'%3E%3Cg opacity='0.8'%3E%3Crect x='0' y='38' width='34' height='52' fill='%23cdeae0'/%3E%3Crect x='44' y='30' width='26' height='60' fill='%23cdeae0'/%3E%3Crect x='118' y='42' width='30' height='48' fill='%23cdeae0'/%3E%3Crect x='196' y='26' width='34' height='64' fill='%23cdeae0'/%3E%3Crect x='262' y='44' width='30' height='46' fill='%23cdeae0'/%3E%3Crect x='306' y='36' width='26' height='54' fill='%23cdeae0'/%3E%3Crect x='211' y='14' width='2' height='12' fill='%23e58a70'/%3E%3Ccircle cx='212' cy='12' r='3' fill='%23ffd95e'/%3E%3Crect x='14' y='50' width='30' height='40' fill='%238fd0bf'/%3E%3Crect x='78' y='46' width='34' height='44' fill='%238fd0bf'/%3E%3Crect x='150' y='56' width='40' height='34' fill='%238fd0bf'/%3E%3Crect x='226' y='50' width='36' height='40' fill='%238fd0bf'/%3E%3Crect x='290' y='58' width='34' height='32' fill='%238fd0bf'/%3E%3Crect x='152' y='50' width='8' height='6' fill='%238fd0bf'/%3E%3Crect x='166' y='50' width='8' height='6' fill='%238fd0bf'/%3E%3Crect x='180' y='50' width='8' height='6' fill='%238fd0bf'/%3E%3Crect x='80' y='40' width='8' height='6' fill='%238fd0bf'/%3E%3Crect x='104' y='40' width='8' height='6' fill='%238fd0bf'/%3E%3Cg fill='%23ffd95e'%3E%3Crect x='20' y='56' width='4' height='5'/%3E%3Crect x='30' y='56' width='4' height='5'/%3E%3Crect x='20' y='66' width='4' height='5'/%3E%3Crect x='30' y='66' width='4' height='5'/%3E%3Crect x='20' y='76' width='4' height='5'/%3E%3Crect x='84' y='52' width='4' height='5'/%3E%3Crect x='94' y='52' width='4' height='5'/%3E%3Crect x='104' y='52' width='4' height='5'/%3E%3Crect x='84' y='62' width='4' height='5'/%3E%3Crect x='94' y='62' width='4' height='5'/%3E%3Crect x='104' y='72' width='4' height='5'/%3E%3Crect x='156' y='62' width='4' height='5'/%3E%3Crect x='166' y='62' width='4' height='5'/%3E%3Crect x='176' y='62' width='4' height='5'/%3E%3Crect x='156' y='72' width='4' height='5'/%3E%3Crect x='176' y='72' width='4' height='5'/%3E%3Crect x='232' y='56' width='4' height='5'/%3E%3Crect x='242' y='56' width='4' height='5'/%3E%3Crect x='252' y='56' width='4' height='5'/%3E%3Crect x='242' y='66' width='4' height='5'/%3E%3Crect x='232' y='76' width='4' height='5'/%3E%3Crect x='252' y='76' width='4' height='5'/%3E%3Crect x='296' y='64' width='4' height='5'/%3E%3Crect x='306' y='64' width='4' height='5'/%3E%3Crect x='316' y='64' width='4' height='5'/%3E%3Crect x='306' y='74' width='4' height='5'/%3E%3C/g%3E%3Cg fill='%23e58a70'%3E%3Crect x='30' y='8' width='20' height='2'/%3E%3Crect x='30' y='14' width='20' height='2'/%3E%3Crect x='33' y='10' width='2' height='4'/%3E%3Crect x='45' y='10' width='2' height='4'/%3E%3Crect x='50' y='11' width='6' height='2'/%3E%3Crect x='54' y='7' width='2' height='4'/%3E%3C/g%3E%3Crect x='0' y='88' width='340' height='2' fill='%237fc4b2'/%3E%3C/g%3E%3C/svg%3E"),
+      repeating-linear-gradient(45deg, rgba(31, 138, 125, 0.02) 0 2px, transparent 2px 9px);
+    background-repeat: repeat-x, repeat;
+    background-position: left bottom, 0 0;
+    background-attachment: fixed, fixed;
   }
 
   a {
@@ -49,15 +54,15 @@
 @layer components {
   /* The boxy bordered card — the atomic unit of the UI */
   .vt-card {
-    @apply bg-card border border-[#d8dfea] rounded;
+    @apply bg-card border border-[#cfe5dd] rounded;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   }
 
   /* Buttons styled like old web — subtle gradient, bordered */
   .vt-btn {
     @apply inline-flex items-center gap-1 px-3 py-1 text-sm font-semibold rounded border cursor-pointer;
-    border-color: #9fb2d1;
-    background: linear-gradient(to bottom, #6d84b4 0%, #4a69a0 100%);
+    border-color: #7fbfae;
+    background: linear-gradient(to bottom, #35a893 0%, #218c7e 100%);
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.25);
     box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.25);
@@ -74,7 +79,7 @@
   /* Ghost / secondary button */
   .vt-btn-ghost {
     @apply inline-flex items-center gap-1 px-3 py-1 text-sm font-semibold rounded border cursor-pointer;
-    border-color: #d8dfea;
+    border-color: #cfe5dd;
     background: linear-gradient(to bottom, #fff 0%, #f0f0f0 100%);
     color: #333;
     box-shadow: 0 1px 2px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
@@ -88,14 +93,14 @@
   /* Text inputs */
   .vt-input {
     @apply block w-full px-2 py-1 text-sm border rounded;
-    border-color: #bcc7d8;
+    border-color: #a8cfc2;
     background: #fff;
     color: #333;
     outline: none;
   }
   .vt-input:focus {
-    border-color: #6d84b4;
-    box-shadow: 0 0 0 2px rgba(59,89,152,0.15);
+    border-color: #35a893;
+    box-shadow: 0 0 0 2px rgba(31,138,125,0.15);
   }
 
   /* Textarea */
@@ -152,5 +157,63 @@
 @keyframes vt-marquee {
   to {
     transform: translateX(-100%);
+  }
+}
+
+/* ── Watercolor sun-wash — the sunny yellow accent. NEVER bordered, never a
+     hard shape: a blurred bleed behind whatever it warms. ── */
+.vt-sunwash {
+  position: relative;
+  z-index: 0;
+}
+.vt-sunwash::before {
+  content: '';
+  position: absolute;
+  inset: -6px -16px;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    rgba(255, 217, 94, 0.55),
+    rgba(255, 217, 94, 0.2) 55%,
+    transparent 78%
+  );
+  filter: blur(5px);
+}
+
+/* ── Otto's swim paths (badge easter eggs) ── */
+@keyframes vt-otto-swim {
+  0%   { transform: translate(-150px, 0) rotate(-4deg); }
+  25%  { transform: translate(22vw, -28px) rotate(4deg); }
+  50%  { transform: translate(48vw, 8px) rotate(-4deg); }
+  75%  { transform: translate(74vw, -22px) rotate(4deg); }
+  100% { transform: translate(108vw, 0) rotate(-2deg); }
+}
+@keyframes vt-otto-drift {
+  0%   { transform: translate(102vw, -160px) rotate(10deg); }
+  30%  { transform: translate(74vw, 18vh) rotate(-8deg); }
+  60%  { transform: translate(46vw, 38vh) rotate(8deg); }
+  100% { transform: translate(-160px, 62vh) rotate(-6deg); }
+}
+@keyframes vt-otto-jet {
+  0%   { transform: translate(-150px, 0) scale(1, 1); }
+  18%  { transform: translate(26vw, -12px) scale(1, 1); }
+  22%  { transform: translate(28vw, -12px) scale(0.82, 1.18); }
+  30%  { transform: translate(46vw, 6px) scale(1.15, 0.9); }
+  55%  { transform: translate(64vw, -8px) scale(1, 1); }
+  60%  { transform: translate(66vw, -8px) scale(0.82, 1.18); }
+  70%  { transform: translate(86vw, 4px) scale(1.15, 0.9); }
+  100% { transform: translate(112vw, -4px) scale(1, 1); }
+}
+@keyframes vt-bubble {
+  0%   { opacity: 0.75; transform: translateY(0) scale(0.5); }
+  100% { opacity: 0; transform: translateY(-52px) scale(1.2); }
+}
+@keyframes vt-ink {
+  0%   { opacity: 0.9; transform: scale(0.2); }
+  100% { opacity: 0; transform: scale(3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vt-otto-stage {
+    display: none;
   }
 }

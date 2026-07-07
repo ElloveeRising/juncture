@@ -34,7 +34,7 @@ export function PostMedia({ media }: { media: PostMediaView[] }) {
               href={mediaUrl(img.path)}
               target="_blank"
               rel="noreferrer"
-              className="block border border-[#d8dfea] rounded overflow-hidden bg-[#f0f0f0]"
+              className="block border border-[#cfe5dd] rounded overflow-hidden bg-[#f0f0f0]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -49,12 +49,12 @@ export function PostMedia({ media }: { media: PostMediaView[] }) {
         </div>
       )}
       {audio.map((a) => (
-        <div key={a.id} className="border border-[#d8dfea] rounded p-2 bg-[#f7f7f7]">
+        <div key={a.id} className="border border-[#cfe5dd] rounded p-2 bg-[#f7f7f7]">
           <RecordPlayer
             size="sm"
             src={mediaUrl(a.path)}
             title="Shared audio"
-            accent="#3b5998"
+            accent="#1f8a7d"
             format={(a.path.split('.').pop() ?? '').toUpperCase()}
           />
         </div>

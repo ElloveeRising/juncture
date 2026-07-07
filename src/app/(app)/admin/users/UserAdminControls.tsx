@@ -55,7 +55,7 @@ export function UserAdminControls({
           }}
         >
           <input type="hidden" name="userId" value={userId} />
-          <button type="submit" className="vt-btn-ghost text-xs py-0.5" style={{ color: '#8b1a1a' }}>
+          <button type="submit" className="vt-btn-ghost text-xs py-0.5" style={{ color: '#c0503c' }}>
             Remove arbiter
           </button>
         </form>
@@ -104,8 +104,8 @@ export function UserAdminControls({
             type="submit"
             className="vt-btn text-xs py-0.5"
             style={{
-              background: 'linear-gradient(to bottom, #a54545 0%, #8b1a1a 100%)',
-              borderColor: '#7a2a2a',
+              background: 'linear-gradient(to bottom, #e07a58 0%, #c0503c 100%)',
+              borderColor: '#9c3f2e',
             }}
           >
             Make arbiter
@@ -135,7 +135,7 @@ export function UserAdminControls({
           type="submit"
           className="vt-btn-ghost text-xs py-0.5"
           disabled={isSelf}
-          style={status === 'suspended' ? { color: '#2d5a2d' } : { color: '#8b1a1a' }}
+          style={status === 'suspended' ? { color: '#2d7d5a' } : { color: '#c0503c' }}
         >
           {status === 'suspended' ? 'Reinstate' : 'Suspend'}
         </button>

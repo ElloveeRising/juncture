@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic'
 
 function RoleBadge({ role }: { role: 'admin' | 'creator' | 'supporter' }) {
   const label = role === 'admin' ? 'Arbiter' : role === 'creator' ? 'Creator' : 'Supporter'
-  const bg = role === 'admin' ? '#8b1a1a' : role === 'creator' ? '#2d5a2d' : '#555'
+  const bg = role === 'admin' ? '#c0503c' : role === 'creator' ? '#2d7d5a' : '#555'
   return (
     <span className="text-xs px-1.5 py-0.5 rounded text-white" style={{ background: bg }}>
       {label}
@@ -61,11 +61,11 @@ export default async function ProfilePage({
   return (
     // Their space: the member's chosen backdrop wraps everything on their page.
     <div
-      className="space-y-4 rounded border border-[#d8dfea] p-3 -m-1"
+      className="space-y-4 rounded border border-[#cfe5dd] p-3 -m-1"
       style={{ background: bg.color }}
     >
       {profile.bannerPath && (
-        <div className="rounded border border-[#d8dfea] overflow-hidden">
+        <div className="rounded border border-[#cfe5dd] overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={mediaUrl(profile.bannerPath)!}

@@ -5,7 +5,7 @@ import { logoutAction } from '@/app/(app)/account-actions'
 
 function RoleBadge({ role }: { role: CurrentUser['role'] }) {
   const label = role === 'admin' ? 'Arbiter' : role === 'creator' ? 'Creator' : 'Supporter'
-  const bg = role === 'admin' ? '#8b1a1a' : role === 'creator' ? '#2d5a2d' : '#555'
+  const bg = role === 'admin' ? '#c0503c' : role === 'creator' ? '#2d7d5a' : '#555'
   return (
     <span
       className="text-xs px-1.5 py-0.5 rounded text-white whitespace-nowrap"
@@ -22,7 +22,7 @@ function Badge({ n }: { n: number }) {
   return (
     <span
       className="ml-1 inline-flex items-center justify-center text-xs font-bold rounded-full px-1.5"
-      style={{ background: '#e53935', color: '#fff', minWidth: 18 }}
+      style={{ background: '#e5573f', color: '#fff', minWidth: 18 }}
     >
       {n > 99 ? '99+' : n}
     </span>
@@ -40,8 +40,8 @@ export function NavBar({
 }) {
   return (
     <header
-      style={{ background: 'linear-gradient(to bottom, #4a69a0, #3b5998)' }}
-      className="border-b border-[#2b4a8b]"
+      style={{ background: 'linear-gradient(to bottom, #218c7e, #1f8a7d)' }}
+      className="border-b border-[#17695f]"
     >
       <div className="max-w-6xl mx-auto px-3 flex items-center gap-3 h-11">
         <Link

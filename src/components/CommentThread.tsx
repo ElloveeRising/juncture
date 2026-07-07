@@ -146,7 +146,7 @@ function CommentItem({
                 }}
               >
                 <input type="hidden" name="commentId" value={c.id} />
-                <button type="submit" className="text-xs text-[#8b1a1a] hover:underline">
+                <button type="submit" className="text-xs text-[#c0503c] hover:underline">
                   Delete
                 </button>
               </form>

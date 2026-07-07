@@ -111,7 +111,7 @@ export function Composer({ displayName }: { displayName: string }) {
             <button
               type="button"
               title="Remove preview"
-              className="absolute top-1 right-1 bg-white/90 border border-[#d8dfea] rounded px-1 text-xs text-[#666]"
+              className="absolute top-1 right-1 bg-white/90 border border-[#cfe5dd] rounded px-1 text-xs text-[#666]"
               onClick={() => {
                 setDismissedUrl(link.url)
                 setLink(null)
@@ -149,7 +149,7 @@ export function Composer({ displayName }: { displayName: string }) {
                 key={i}
                 src={src}
                 alt=""
-                className="w-full h-16 object-cover rounded border border-[#d8dfea]"
+                className="w-full h-16 object-cover rounded border border-[#cfe5dd]"
               />
             ))}
           </div>

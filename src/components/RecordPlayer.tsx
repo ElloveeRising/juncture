@@ -50,46 +50,85 @@ function makeNoise(c: AudioContext, seconds: number, shape: (i: number, n: numbe
   return buf
 }
 
-/** The needle touching down: a soft low thump + a burst of contact fuzz. */
+/** The needle touching down — unmistakable now: a real thump, then the groove catches. */
 function playNeedleDrop() {
   withAudio((c) => {
     const t = c.currentTime
-    // thump
+    // thump (two-stage: body + sub)
     const osc = c.createOscillator()
     const og = c.createGain()
-    osc.frequency.setValueAtTime(85, t)
-    osc.frequency.exponentialRampToValueAtTime(38, t + 0.12)
-    og.gain.setValueAtTime(0.18, t)
-    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.16)
+    osc.frequency.setValueAtTime(95, t)
+    osc.frequency.exponentialRampToValueAtTime(36, t + 0.14)
+    og.gain.setValueAtTime(0.38, t)
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.2)
     osc.connect(og).connect(c.destination)
     osc.start(t)
-    osc.stop(t + 0.18)
-    // contact fuzz
+    osc.stop(t + 0.22)
+    const sub = c.createOscillator()
+    const sg = c.createGain()
+    sub.frequency.setValueAtTime(52, t)
+    sub.frequency.exponentialRampToValueAtTime(30, t + 0.1)
+    sg.gain.setValueAtTime(0.2, t)
+    sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.12)
+    sub.connect(sg).connect(c.destination)
+    sub.start(t)
+    sub.stop(t + 0.14)
+    // the groove catching — a longer, louder contact fuzz that settles
     const fuzz = c.createBufferSource()
-    fuzz.buffer = makeNoise(c, 0.22, (i, n) => (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.5) * 0.5)
+    fuzz.buffer = makeNoise(c, 0.34, (i, n) => (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.2) * 0.55)
     const fg = c.createGain()
-    fg.gain.value = 0.12
+    fg.gain.value = 0.26
     const lp = c.createBiquadFilter()
     lp.type = 'lowpass'
-    lp.frequency.value = 3200
+    lp.frequency.value = 3600
     fuzz.connect(lp).connect(fg).connect(c.destination)
     fuzz.start(t)
   })
 }
 
-/** The needle coming off: a tick and a tiny swish. */
-function playNeedleLift() {
+/**
+ * The needle coming off. `hard` (pause mid-song) = an exaggerated
+ * scrrrp-off-the-groove followed by the arm clunking home. Soft (record ran
+ * out) = just the arm returning — no scratch, the song already ended.
+ */
+function playNeedleLift(hard: boolean) {
   withAudio((c) => {
     const t = c.currentTime
+    if (hard) {
+      // the drag off the groove — noise swept upward through a bandpass
+      const zip = c.createBufferSource()
+      zip.buffer = makeNoise(c, 0.26, (i, n) => (Math.random() * 2 - 1) * (0.35 + 0.65 * Math.pow(1 - i / n, 0.6)))
+      const bp = c.createBiquadFilter()
+      bp.type = 'bandpass'
+      bp.Q.value = 1.6
+      bp.frequency.setValueAtTime(700, t)
+      bp.frequency.exponentialRampToValueAtTime(2600, t + 0.22)
+      const zg = c.createGain()
+      zg.gain.setValueAtTime(0.34, t)
+      zg.gain.exponentialRampToValueAtTime(0.0001, t + 0.26)
+      zip.connect(bp).connect(zg).connect(c.destination)
+      zip.start(t)
+    }
+    // the arm clunking back onto its rest
+    const clunkAt = t + (hard ? 0.2 : 0.02)
+    const clunk = c.createOscillator()
+    const cg = c.createGain()
+    clunk.frequency.setValueAtTime(150, clunkAt)
+    clunk.frequency.exponentialRampToValueAtTime(58, clunkAt + 0.09)
+    cg.gain.setValueAtTime(hard ? 0.34 : 0.24, clunkAt)
+    cg.gain.exponentialRampToValueAtTime(0.0001, clunkAt + 0.13)
+    clunk.connect(cg).connect(c.destination)
+    clunk.start(clunkAt)
+    clunk.stop(clunkAt + 0.15)
     const tick = c.createBufferSource()
-    tick.buffer = makeNoise(c, 0.05, (i, n) => (Math.random() * 2 - 1) * Math.pow(1 - i / n, 1.2) * 0.4)
+    tick.buffer = makeNoise(c, 0.05, (i, n) => (Math.random() * 2 - 1) * Math.pow(1 - i / n, 1.2) * 0.5)
     const hp = c.createBiquadFilter()
     hp.type = 'highpass'
-    hp.frequency.value = 1800
+    hp.frequency.value = 1600
     const g = c.createGain()
-    g.gain.value = 0.08
+    g.gain.value = 0.16
     tick.connect(hp).connect(g).connect(c.destination)
-    tick.start(t)
+    tick.start(clunkAt)
   })
 }
 
@@ -287,7 +326,7 @@ export function RecordPlayer({
     setPlaying(false)
     crackleStopRef.current?.()
     crackleStopRef.current = null
-    if (lift) playNeedleLift()
+    playNeedleLift(lift) // hard scratch on pause; soft arm-return on run-out
     ensureLoop() // keep animating the coast-down
   }
   function toggle() {
@@ -342,7 +381,7 @@ export function RecordPlayer({
               }}
             >
               <div
-                className="absolute rounded-full bg-[#e9ebee] border border-black/40"
+                className="absolute rounded-full bg-[#f6f2ea] border border-black/40"
                 style={{ width: 6, height: 6, left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
               />
             </div>
@@ -415,7 +454,10 @@ export function RecordPlayer({
         src={src}
         preload="metadata"
         onPlay={onPlay}
-        onPause={() => onStop(true)}
+        onPause={() => {
+          // browsers fire pause right before ended — don't scratch on a natural run-out
+          if (!audioRef.current?.ended) onStop(true)
+        }}
         onEnded={() => onStop(false)}
         onTimeUpdate={(e) => setCurrent(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}

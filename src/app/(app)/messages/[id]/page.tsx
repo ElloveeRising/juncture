@@ -33,7 +33,7 @@ export default async function ThreadPage({
       <FeedAutoRefresh intervalMs={15000} />
 
       <div className="vt-card p-2 flex items-center gap-2">
-        <Link href="/messages" className="text-sm text-[#3b5998] px-1">←</Link>
+        <Link href="/messages" className="text-sm text-[#1f8a7d] px-1">←</Link>
         {other && (
           <Link href={`/u/${other.handle}`} className="flex items-center gap-2 no-underline">
             <Avatar displayName={other.displayName} src={mediaUrl(other.avatarPath)} size={32} />
@@ -56,7 +56,7 @@ export default async function ThreadPage({
               <div
                 className={`max-w-[75%] px-3 py-1.5 rounded border text-sm whitespace-pre-wrap break-words ${
                   m.mine
-                    ? 'bg-[#dce3ef] border-[#c3d0e8]'
+                    ? 'bg-[#dff2ea] border-[#b5ddd0]'
                     : 'bg-[#f2f3f5] border-[#e4e7ec]'
                 }`}
               >

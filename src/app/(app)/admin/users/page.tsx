@@ -40,9 +40,9 @@ export default async function AdminUsersPage() {
               <td className="p-2">{u.postCount}</td>
               <td className="p-2">
                 {u.status === 'suspended' ? (
-                  <span className="text-[#8b1a1a] font-bold">suspended</span>
+                  <span className="text-[#c0503c] font-bold">suspended</span>
                 ) : (
-                  <span className="text-[#2d5a2d]">active</span>
+                  <span className="text-[#2d7d5a]">active</span>
                 )}
               </td>
               <td className="p-2">

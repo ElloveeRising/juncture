@@ -20,7 +20,7 @@ export function LinkPreviewCard({ preview }: { preview: LinkPreviewView }) {
       href={preview.url}
       target="_blank"
       rel="noreferrer nofollow"
-      className="mt-2 flex border border-[#d8dfea] rounded overflow-hidden hover:bg-[#f7f7f7] no-underline"
+      className="mt-2 flex border border-[#cfe5dd] rounded overflow-hidden hover:bg-[#f7f7f7] no-underline"
     >
       {preview.imagePath && (
         // eslint-disable-next-line @next/next/no-img-element

@@ -18,14 +18,14 @@ export function Avatar({
         alt={displayName}
         width={size}
         height={size}
-        className="rounded border border-[#d8dfea] object-cover bg-[#eee]"
+        className="rounded border border-[#cfe5dd] object-cover bg-[#eee]"
         style={{ width: size, height: size }}
       />
     )
   }
   return (
     <div
-      className="rounded border border-[#d8dfea] flex items-center justify-center text-white font-bold select-none"
+      className="rounded border border-[#cfe5dd] flex items-center justify-center text-white font-bold select-none"
       style={{ width: size, height: size, background: 'var(--chrome-sec)', fontSize: size * 0.4 }}
       aria-hidden
     >

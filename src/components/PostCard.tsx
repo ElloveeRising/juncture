@@ -134,7 +134,7 @@ export function PostCard({
           {(isOwner || canDelete) && !editing && (
             <div className="mt-2 flex gap-3 text-xs">
               {isOwner && (
-                <button className="text-[#3b5998] hover:underline" onClick={() => setEditing(true)}>
+                <button className="text-[#1f8a7d] hover:underline" onClick={() => setEditing(true)}>
                   Edit
                 </button>
               )}
@@ -146,7 +146,7 @@ export function PostCard({
                   }}
                 >
                   <input type="hidden" name="postId" value={post.id} />
-                  <button type="submit" className="text-[#8b1a1a] hover:underline">
+                  <button type="submit" className="text-[#c0503c] hover:underline">
                     Delete
                   </button>
                 </form>

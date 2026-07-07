@@ -42,7 +42,7 @@ export function LikeButton({
     <button
       type="button"
       onClick={onClick}
-      className={`${cls} hover:underline ${liked ? 'font-bold text-[#3b5998]' : 'text-[#666]'}`}
+      className={`${cls} hover:underline ${liked ? 'font-bold text-[#1f8a7d]' : 'text-[#666]'}`}
       aria-pressed={liked}
     >
       {liked ? '👍 Liked' : '👍 Like'}

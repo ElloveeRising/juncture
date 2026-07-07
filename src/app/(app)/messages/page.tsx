@@ -50,7 +50,7 @@ export default async function MessagesPage() {
                   {c.unread > 0 && (
                     <span
                       className="ml-auto text-xs font-bold rounded-full px-1.5 text-white"
-                      style={{ background: '#e53935' }}
+                      style={{ background: '#e5573f' }}
                     >
                       {c.unread}
                     </span>

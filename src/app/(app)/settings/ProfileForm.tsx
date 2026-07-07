@@ -64,8 +64,8 @@ function Swatches({
           className="w-7 h-7 rounded border"
           style={{
             background: o.color,
-            borderColor: value === key ? '#333' : '#d8dfea',
-            boxShadow: value === key ? '0 0 0 2px rgba(59,89,152,0.4)' : undefined,
+            borderColor: value === key ? '#333' : '#cfe5dd',
+            boxShadow: value === key ? '0 0 0 2px rgba(31,138,125,0.4)' : undefined,
           }}
         />
       ))}
@@ -238,7 +238,7 @@ export function ProfileForm({
             Choose avatar
           </button>
           {avatarFileName && (
-            <span className="text-xs px-1.5 py-0.5 rounded border border-[#c3d0e8] bg-[#dce3ef] text-[#3b5998]">
+            <span className="text-xs px-1.5 py-0.5 rounded border border-[#b5ddd0] bg-[#dff2ea] text-[#1f8a7d]">
               📎 {avatarFileName} — uploads when you save
             </span>
           )}
@@ -310,7 +310,7 @@ export function ProfileForm({
             <img
               src={bannerPreview}
               alt=""
-              className="w-full h-20 object-cover rounded border border-[#d8dfea] mb-1"
+              className="w-full h-20 object-cover rounded border border-[#cfe5dd] mb-1"
             />
           )}
           <input
@@ -330,7 +330,7 @@ export function ProfileForm({
               {initial.bannerUrl || bannerFileName ? 'Replace banner' : 'Choose banner'}
             </button>
             {bannerFileName && (
-              <span className="text-xs px-1.5 py-0.5 rounded border border-[#c3d0e8] bg-[#dce3ef] text-[#3b5998]">
+              <span className="text-xs px-1.5 py-0.5 rounded border border-[#b5ddd0] bg-[#dff2ea] text-[#1f8a7d]">
                 📎 {bannerFileName} — uploads when you save
               </span>
             )}
@@ -389,7 +389,7 @@ export function ProfileForm({
               ♪ {initial.hasSong ? 'Replace song' : 'Choose song'}
             </button>
             {songFileName && (
-              <span className="text-xs px-1.5 py-0.5 rounded border border-[#c3d0e8] bg-[#dce3ef] text-[#3b5998]">
+              <span className="text-xs px-1.5 py-0.5 rounded border border-[#b5ddd0] bg-[#dff2ea] text-[#1f8a7d]">
                 📎 {songFileName} — uploads when you save
               </span>
             )}

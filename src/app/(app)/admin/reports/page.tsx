@@ -23,9 +23,9 @@ export default function AdminReportsPage() {
                   <TimeAgo iso={r.createdAt.toISOString()} />
                 </div>
                 <div className="text-sm font-bold mt-0.5">Reason: {r.reason}</div>
-                <div className="text-sm text-[#444] mt-1 border-l-2 border-[#d8dfea] pl-2 italic">
+                <div className="text-sm text-[#444] mt-1 border-l-2 border-[#cfe5dd] pl-2 italic">
                   {r.targetExcerpt}
-                  {r.targetDeleted && <span className="ml-1 text-[#8b1a1a]">(already deleted)</span>}
+                  {r.targetDeleted && <span className="ml-1 text-[#c0503c]">(already deleted)</span>}
                 </div>
               </div>
               <div className="flex flex-col gap-1 shrink-0">
@@ -33,7 +33,7 @@ export default function AdminReportsPage() {
                   <form action={adminDeleteContentAction}>
                     <input type="hidden" name="targetType" value={r.targetType} />
                     <input type="hidden" name="targetId" value={r.targetId} />
-                    <button className="vt-btn-ghost text-xs" style={{ color: '#8b1a1a' }}>
+                    <button className="vt-btn-ghost text-xs" style={{ color: '#c0503c' }}>
                       Delete {r.targetType}
                     </button>
                   </form>

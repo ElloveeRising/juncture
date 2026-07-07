@@ -25,7 +25,7 @@ export default async function NotificationsPage() {
           {items.map((n) => (
             <div
               key={n.id}
-              className={`p-3 text-sm flex items-center gap-2 ${n.read ? '' : 'bg-[#f0f4ff]'}`}
+              className={`p-3 text-sm flex items-center gap-2 ${n.read ? '' : 'bg-[#eefaf4]'}`}
             >
               <span className="text-[#333]">
                 {n.actorHandle ? (
@@ -39,7 +39,7 @@ export default async function NotificationsPage() {
                 {n.postId && (
                   <>
                     {' — '}
-                    <Link href="/feed" className="text-[#3b5998]">
+                    <Link href="/feed" className="text-[#1f8a7d]">
                       view
                     </Link>
                   </>

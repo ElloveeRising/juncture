@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="vt-card p-3 text-center">
-      <div className="text-2xl font-bold text-[#3b5998]">{value}</div>
+      <div className="text-2xl font-bold text-[#1f8a7d]">{value}</div>
       <div className="text-xs text-[#666]">{label}</div>
     </div>
   )
@@ -29,7 +29,7 @@ export default function AdminOverview() {
           logged with your note.
         </p>
         {c.openReports > 0 && (
-          <p className="text-[#8b1a1a]">
+          <p className="text-[#c0503c]">
             {c.openReports} open report{c.openReports === 1 ? '' : 's'} waiting in{' '}
             <Link href="/admin/reports">Reports</Link>.
           </p>

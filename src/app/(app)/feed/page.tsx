@@ -20,6 +20,18 @@ export default async function FeedPage() {
       <div className="space-y-4">
         <FeedAutoRefresh />
 
+        <div className="text-center py-2">
+          <h1 className="vt-pixel text-2xl text-[#1f8a7d] inline-block vt-sunwash">
+            ★ Juncture ★
+          </h1>
+          <p className="text-xs text-[#8a8375] mt-0.5">
+            the private social media network of{' '}
+            <a href="https://aschellcompany.com" target="_blank" rel="noreferrer">
+              A Schell Company
+            </a>
+          </p>
+        </div>
+
         {canPost(user) ? (
           <Composer displayName={user.displayName} />
         ) : (

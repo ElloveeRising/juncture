@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#3b5998', // chrome blue tints the mobile browser bar
+  themeColor: '#1f8a7d', // chrome blue tints the mobile browser bar
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
