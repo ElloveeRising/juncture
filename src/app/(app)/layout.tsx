@@ -11,7 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen">
       <NavBar user={user} unread={unread} unreadDms={unreadDms} />
-      <div className="max-w-5xl mx-auto px-3 py-4 grid grid-cols-1 md:grid-cols-[1fr_240px] gap-4">
+      <div className="max-w-6xl mx-auto px-3 py-4 grid grid-cols-1 md:grid-cols-[1fr_240px] gap-4">
         <main className="min-w-0">{children}</main>
         <div className="hidden md:block">
           <RightRail user={user} />

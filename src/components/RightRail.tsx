@@ -23,6 +23,14 @@ export function RightRail({ user }: { user: CurrentUser }) {
           A window into a friendship-network of artists. Be kind; this is a small room.
         </p>
       </div>
+      <div className="vt-card px-2 py-1">
+        <div className="vt-marquee vt-pixel text-xs" style={{ color: '#3b5998' }}>
+          <span>
+            ★ yes is meaningful only if no is possible ★ a friendship-network of artists ★
+            handmade, no algorithm, no landlord ★
+          </span>
+        </div>
+      </div>
     </aside>
   )
 }

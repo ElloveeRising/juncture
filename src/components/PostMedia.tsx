@@ -1,3 +1,5 @@
+import { RecordPlayer } from './RecordPlayer'
+
 export type PostMediaView = {
   id: number
   kind: 'image' | 'audio'
@@ -47,9 +49,15 @@ export function PostMedia({ media }: { media: PostMediaView[] }) {
         </div>
       )}
       {audio.map((a) => (
-        <audio key={a.id} controls preload="none" className="w-full" src={mediaUrl(a.path)}>
-          Your browser does not support audio playback.
-        </audio>
+        <div key={a.id} className="border border-[#d8dfea] rounded p-2 bg-[#f7f7f7]">
+          <RecordPlayer
+            size="sm"
+            src={mediaUrl(a.path)}
+            title="Shared audio"
+            accent="#3b5998"
+            format={(a.path.split('.').pop() ?? '').toUpperCase()}
+          />
+        </div>
       ))}
     </div>
   )

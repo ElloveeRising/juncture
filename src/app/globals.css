@@ -20,9 +20,14 @@
 /* ── Base reset to early-2000s feel ────────────────────────────────────── */
 @layer base {
   body {
-    @apply bg-page text-[#333] font-sans;
+    @apply text-[#333] font-sans;
     font-size: 13px;
     line-height: 1.5;
+    /* GeoCities-grade tiled backdrop — a quiet diagonal weave, no image assets */
+    background-color: #e6e8ee;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(59, 89, 152, 0.03) 0 2px, transparent 2px 8px),
+      repeating-linear-gradient(-45deg, rgba(59, 89, 152, 0.03) 0 2px, transparent 2px 8px);
   }
 
   a {
@@ -98,23 +103,54 @@
     @apply vt-input resize-y min-h-[80px];
   }
 
-  /* Record player — vinyl spin (33⅓-ish, honoring reduced-motion) */
-  .vt-vinyl {
-    animation: vt-spin 1.8s linear infinite;
-    animation-play-state: paused;
+  /* Pixel-era type — for wordmarks, badges, and the company seal */
+  .vt-pixel {
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
-  .vt-vinyl.spinning {
-    animation-play-state: running;
+
+  /* Classic 88×31 web badge — the currency of the old internet */
+  .vt-badge88 {
+    width: 88px;
+    height: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 1.1;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+    box-shadow:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.4),
+      inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.2);
+    user-select: none;
+  }
+
+  /* Marquee — because some things scroll forever */
+  .vt-marquee {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .vt-marquee > span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: vt-marquee 22s linear infinite;
   }
   @media (prefers-reduced-motion: reduce) {
-    .vt-vinyl {
+    .vt-marquee > span {
       animation: none;
+      padding-left: 0;
     }
   }
 }
 
-@keyframes vt-spin {
+@keyframes vt-marquee {
   to {
-    transform: rotate(360deg);
+    transform: translateX(-100%);
   }
 }

@@ -43,12 +43,13 @@ export function NavBar({
       style={{ background: 'linear-gradient(to bottom, #4a69a0, #3b5998)' }}
       className="border-b border-[#2b4a8b]"
     >
-      <div className="max-w-5xl mx-auto px-3 flex items-center gap-3 h-11">
+      <div className="max-w-6xl mx-auto px-3 flex items-center gap-3 h-11">
         <Link
           href="/feed"
-          className="font-bold text-white text-lg hover:no-underline shrink-0"
+          className="vt-pixel text-white text-lg hover:no-underline shrink-0"
+          style={{ textShadow: '1px 1px 0 rgba(0,0,0,0.4)' }}
         >
-          {APP_NAME}
+          ★{APP_NAME.toLowerCase()}★
         </Link>
 
         {/* Primary nav — scrolls horizontally on small screens so every link
