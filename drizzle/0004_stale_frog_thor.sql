@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `banner_path` text;

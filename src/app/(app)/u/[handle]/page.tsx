@@ -10,6 +10,7 @@ import { mediaUrl } from '@/lib/urls'
 import { Avatar } from '@/components/Avatar'
 import { PostCard } from '@/components/PostCard'
 import { ProfileSafetyControls } from '@/components/ProfileSafetyControls'
+import { RecordPlayer } from '@/components/RecordPlayer'
 import { startConversationAction } from '@/app/(app)/messages/dm-actions'
 
 export const dynamic = 'force-dynamic'
@@ -63,6 +64,17 @@ export default async function ProfilePage({
       className="space-y-4 rounded border border-[#d8dfea] p-3 -m-1"
       style={{ background: bg.color }}
     >
+      {profile.bannerPath && (
+        <div className="rounded border border-[#d8dfea] overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={mediaUrl(profile.bannerPath)!}
+            alt=""
+            className="w-full h-28 sm:h-40 object-cover block"
+          />
+        </div>
+      )}
+
       <div className="vt-card p-4" style={{ borderTop: `3px solid ${accent.color}` }}>
         <div className="flex gap-4">
           <Avatar displayName={profile.displayName} src={mediaUrl(profile.avatarPath)} size={72} />
@@ -117,17 +129,13 @@ export default async function ProfilePage({
 
         {profile.profileSongPath && (
           <div className="mt-3 pt-3 border-t border-[#eee]">
-            <div className="text-xs font-bold mb-1" style={{ color: accent.color }}>
-              ♫ {profile.profileSongTitle || 'Profile song'}
-            </div>
-            <audio
-              controls
-              preload="none"
-              className="w-full max-w-md"
+            <RecordPlayer
               src={`/media/${profile.profileSongPath}`}
-            >
-              Your browser does not support audio playback.
-            </audio>
+              title={profile.profileSongTitle || 'Profile song'}
+              accent={accent.color}
+              format={(profile.profileSongPath.split('.').pop() ?? '').toUpperCase()}
+              autoplay={!isSelf}
+            />
           </div>
         )}
       </div>

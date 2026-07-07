@@ -212,6 +212,7 @@ export type PublicProfile = {
   profileSongTitle: string | null
   profileAccent: string | null
   profileBg: string | null
+  bannerPath: string | null
 }
 
 /**
@@ -235,5 +236,6 @@ export function getProfileByHandle(handle: string): PublicProfile | undefined {
     profileSongTitle: u.profileSongTitle,
     profileAccent: u.profileAccent,
     profileBg: u.profileBg,
+    bannerPath: u.bannerPath,
   }
 }

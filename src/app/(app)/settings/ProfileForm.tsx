@@ -79,6 +79,7 @@ export function ProfileForm({
   initial: Draft & {
     userId: number
     avatarUrl: string | null
+    bannerUrl: string | null
     songTitleSaved: string | null
     hasSong: boolean
     role: 'admin' | 'creator' | 'supporter'
@@ -88,6 +89,7 @@ export function ProfileForm({
   const [state, action] = useActionState<ProfileState, FormData>(updateProfileAction, {})
   const router = useRouter()
   const avatarInputRef = useRef<HTMLInputElement>(null)
+  const bannerInputRef = useRef<HTMLInputElement>(null)
   const songInputRef = useRef<HTMLInputElement>(null)
 
   const [form, setForm] = useState<Draft>({
@@ -104,8 +106,11 @@ export function ProfileForm({
   const [restored, setRestored] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(initial.avatarUrl)
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null)
+  const [bannerPreview, setBannerPreview] = useState<string | null>(initial.bannerUrl)
+  const [bannerFileName, setBannerFileName] = useState<string | null>(null)
   const [songFileName, setSongFileName] = useState<string | null>(null)
   const [removeAvatar, setRemoveAvatar] = useState(false)
+  const [removeBanner, setRemoveBanner] = useState(false)
   const [removeSong, setRemoveSong] = useState(false)
 
   // Restore a draft from this tab, if one exists.
@@ -147,8 +152,10 @@ export function ProfileForm({
       setForm(saved)
       setRestored(false)
       setAvatarFileName(null)
+      setBannerFileName(null)
       setSongFileName(null)
       setRemoveAvatar(false)
+      setRemoveBanner(false)
       setRemoveSong(false)
       router.refresh()
     }
@@ -158,8 +165,10 @@ export function ProfileForm({
   const dirty =
     JSON.stringify(form) !== JSON.stringify(baseline) ||
     !!avatarFileName ||
+    !!bannerFileName ||
     !!songFileName ||
     removeAvatar ||
+    removeBanner ||
     removeSong
 
   function onAvatarPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -168,6 +177,14 @@ export function ProfileForm({
       setAvatarPreview(URL.createObjectURL(f))
       setAvatarFileName(f.name)
       setRemoveAvatar(false)
+    }
+  }
+  function onBannerPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (f) {
+      setBannerPreview(URL.createObjectURL(f))
+      setBannerFileName(f.name)
+      setRemoveBanner(false)
     }
   }
   function onSongPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -285,6 +302,54 @@ export function ProfileForm({
       {/* ── Your space ── */}
       <div className="border-t border-[#eee] pt-3 space-y-3">
         <h3 className="text-sm font-bold text-[#333]">Your space</h3>
+
+        <div>
+          <span className="block text-sm text-[#666] mb-1">Banner</span>
+          {bannerPreview && !removeBanner && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={bannerPreview}
+              alt=""
+              className="w-full h-20 object-cover rounded border border-[#d8dfea] mb-1"
+            />
+          )}
+          <input
+            ref={bannerInputRef}
+            type="file"
+            name="banner"
+            accept={IMAGE_ACCEPT}
+            className="hidden"
+            onChange={onBannerPick}
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="vt-btn-ghost text-xs"
+              onClick={() => bannerInputRef.current?.click()}
+            >
+              {initial.bannerUrl || bannerFileName ? 'Replace banner' : 'Choose banner'}
+            </button>
+            {bannerFileName && (
+              <span className="text-xs px-1.5 py-0.5 rounded border border-[#c3d0e8] bg-[#dce3ef] text-[#3b5998]">
+                📎 {bannerFileName} — uploads when you save
+              </span>
+            )}
+            {initial.bannerUrl && !bannerFileName && (
+              <label className="text-xs text-[#666] flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  name="removeBanner"
+                  checked={removeBanner}
+                  onChange={(e) => setRemoveBanner(e.target.checked)}
+                />
+                Remove banner
+              </label>
+            )}
+          </div>
+          <p className="text-xs text-[#999] mt-1">
+            Wide header image across the top of your page (cropped to 1600×400).
+          </p>
+        </div>
 
         <div>
           <span className="block text-sm text-[#666] mb-1">Accent color</span>

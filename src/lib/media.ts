@@ -137,6 +137,27 @@ export async function processAndStoreAvatar(file: File): Promise<{ path: string 
   }
 }
 
+/**
+ * Process and store a profile banner: wide cover-crop (1600×400), webp,
+ * metadata stripped. Recompression keeps banners ~100KB — storage never
+ * notices. Returns the relative path, or null on failure.
+ */
+export async function processAndStoreBanner(file: File): Promise<{ path: string } | null> {
+  try {
+    const buf = Buffer.from(await file.arrayBuffer())
+    const out = await sharp(buf)
+      .rotate()
+      .resize(1600, 400, { fit: 'cover', position: 'attention' })
+      .webp({ quality: 80 })
+      .toBuffer()
+    const relPath = `${datedRelDir()}/banner_${randName()}.webp`
+    await writeMedia(relPath, out)
+    return { path: relPath }
+  } catch {
+    return null
+  }
+}
+
 /** Store an uploaded audio file as-is (no transcoding in v1). */
 export async function storeAudio(file: File): Promise<StoredAudio> {
   const ext = AUDIO_EXT[file.type] ?? 'bin'

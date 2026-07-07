@@ -24,6 +24,7 @@ export type CurrentUser = {
   profileSongTitle: string | null
   profileAccent: string | null
   profileBg: string | null
+  bannerPath: string | null
 }
 
 // Cached per-request so multiple calls in one render don't re-hit the DB.
@@ -51,6 +52,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     profileSongTitle: row.profileSongTitle,
     profileAccent: row.profileAccent,
     profileBg: row.profileBg,
+    bannerPath: row.bannerPath,
   }
 })
 

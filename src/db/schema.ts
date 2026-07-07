@@ -34,6 +34,7 @@ export const users = sqliteTable('users', {
   profileSongTitle: text('profile_song_title'),
   profileAccent: text('profile_accent'),
   profileBg: text('profile_bg'),
+  bannerPath: text('banner_path'), // wide header image on the profile page
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),

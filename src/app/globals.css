@@ -97,4 +97,24 @@
   .vt-textarea {
     @apply vt-input resize-y min-h-[80px];
   }
+
+  /* Record player — vinyl spin (33⅓-ish, honoring reduced-motion) */
+  .vt-vinyl {
+    animation: vt-spin 1.8s linear infinite;
+    animation-play-state: paused;
+  }
+  .vt-vinyl.spinning {
+    animation-play-state: running;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vt-vinyl {
+      animation: none;
+    }
+  }
+}
+
+@keyframes vt-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

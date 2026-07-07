@@ -40,6 +40,7 @@ export default async function SettingsPage() {
             handle: user.handle,
             bio: user.bio ?? '',
             avatarUrl: mediaUrl(user.avatarPath),
+            bannerUrl: mediaUrl(user.bannerPath),
             isAnonymous: user.isAnonymous,
             allowSupporterDms: user.allowSupporterDms,
             role: user.role,

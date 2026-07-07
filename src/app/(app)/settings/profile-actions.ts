@@ -10,6 +10,7 @@ import {
   isAllowedImage,
   isAllowedAudio,
   processAndStoreAvatar,
+  processAndStoreBanner,
   storeAudio,
   MAX_IMAGE_BYTES,
   MAX_AUDIO_BYTES,
@@ -37,6 +38,7 @@ export async function updateProfileAction(
   const allowSupporterDms = formData.get('allowSupporterDms') != null
   const removeAvatar = formData.get('removeAvatar') != null
   const removeSong = formData.get('removeSong') != null
+  const removeBanner = formData.get('removeBanner') != null
 
   // Theme keys — validated against the curated palette; anything else ignored.
   const accentRaw = String(formData.get('profileAccent') ?? '')
@@ -60,6 +62,24 @@ export async function updateProfileAction(
     avatarPath = stored.path
   } else if (removeAvatar) {
     avatarPath = null
+  }
+
+  // Optional banner upload — same allowlist/cap as other images.
+  const bannerRaw = formData.get('banner')
+  const bannerFile = bannerRaw instanceof File && bannerRaw.size > 0 ? bannerRaw : null
+  let bannerPath: string | null | undefined = undefined // undefined = leave unchanged
+  if (bannerFile) {
+    if (!isAllowedImage(bannerFile)) {
+      return { error: 'Banner must be a JPEG, PNG, WebP, or GIF.' }
+    }
+    if (bannerFile.size > MAX_IMAGE_BYTES) {
+      return { error: `Banner must be under ${MAX_IMAGE_BYTES / 1024 / 1024} MB.` }
+    }
+    const stored = await processAndStoreBanner(bannerFile)
+    if (!stored) return { error: 'Could not process that banner image. Try another.' }
+    bannerPath = stored.path
+  } else if (removeBanner) {
+    bannerPath = null
   }
 
   // Optional profile song upload.
@@ -99,6 +119,7 @@ export async function updateProfileAction(
         profileBg,
         profileSongTitle,
         ...(avatarPath !== undefined ? { avatarPath } : {}),
+        ...(bannerPath !== undefined ? { bannerPath } : {}),
         ...(profileSongPath !== undefined ? { profileSongPath } : {}),
       })
       .where(eq(users.id, user.id))
