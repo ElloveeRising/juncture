@@ -5,6 +5,7 @@ import { Composer } from '@/components/Composer'
 import { PostCard } from '@/components/PostCard'
 import { FeedAutoRefresh } from '@/components/FeedAutoRefresh'
 import { FeedLeftRail } from '@/components/FeedLeftRail'
+import { RightRail } from '@/components/RightRail'
 
 // Always render fresh — this is a near-live feed.
 export const dynamic = 'force-dynamic'
@@ -52,6 +53,12 @@ export default async function FeedPage() {
             <PostCard key={p.id} post={p} viewerId={user.id} viewerRole={user.role} />
           ))
         )}
+
+        {/* Phones never see the right rail — give them the quotes, the club
+            card, and the donate box below the feed instead. */}
+        <div className="md:hidden pt-2">
+          <RightRail user={user} />
+        </div>
       </div>
     </div>
   )

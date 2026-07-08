@@ -6,6 +6,9 @@ import { SchellSeal } from '@/components/SchellSeal'
 export const metadata: Metadata = {
   title: APP_NAME,
   description: `${APP_NAME} — members only`,
+  // iPhone "Add to Home Screen" — full-screen app feel, vinyl icon
+  appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: 'default' },
+  icons: { apple: '/apple-touch-icon.png' },
 }
 
 export const viewport: Viewport = {
